@@ -4,7 +4,7 @@
     {
       "label": "sjasmplus",
       "type": "shell",
-      "command": "C:/sjasmplus118.exe",
+      "command": "./sjasmplus118.exe",
       "args": [
         "--lst=${fileDirname}/${fileBasenameNoExtension}.lst",
         "--sld=${fileDirname}/${fileBasenameNoExtension}.sld",
