@@ -1,15 +1,3 @@
-        DEVICE ZXSPECTRUM48
-	SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
-        org $8000               ; Program located at $8000 = 32768.
-
-BEGIN:          
-        DI              ; Disable interruptions.
-        LD SP, 0        ; Set the stack pointer to the top of memory.
-        LD HL, $5800    ; First square of the screen. 
-
-MAIN:
-        CALL CLEARSCR   ; Clean screen.
-
 ;-----------------------------------------------------------------------------------------
 ; STARTINGSCREEN - Displays the start screen with its corresponding messages.
 ;-----------------------------------------------------------------------------------------
@@ -42,21 +30,9 @@ STARTINGSCREEN:
         CALL READYKEY
         CP 1            
         JP Z, GAMESCREEN        ; Y - Game
-        JR ENDINGSCREEN         ; N - End screen
+        JP ENDINGSCREEN                     ; N - End screen
 ;-----------------------------------------------------------------------------------------
-
-ENDOFCODE:            
-        JR ENDOFCODE
 
 PLAYMESSAGE1: DB "WOULD YOU ", 0
 PLAYMESSAGE2: DB "LIKE TO PLAY?", 0
 PLAYMESSAGE3: DB " (Y/N)", 0
-
-        INCLUDE "GameScreen.asm"
-        INCLUDE "EndScreen.asm"
-        INCLUDE "ReadKey.asm"
-        INCLUDE "Printat.asm"
-        INCLUDE "LoadStartingScreen.asm"
-        INCLUDE "LoadEndingScreen.asm"
-        INCLUDE "Tetris_3D.asm"
-        INCLUDE "AtributeCoordinate.asm"

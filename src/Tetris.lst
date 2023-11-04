@@ -1,0 +1,525 @@
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\Tetris.asm
+  1   0000                  DEVICE ZXSPECTRUM48
+  2   0000              	SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
+  3   0000                  org $8000               ; Program located at $8000 = 32768.
+  4   8000
+  5   8000              BEGIN:
+  6   8000 F3               DI              ; Disable interruptions.
+  7   8001 31 00 00         LD SP, 0        ; Set the stack pointer to the top of memory.
+  8   8004 21 00 58         LD HL, $5800    ; First square of the screen.
+  9   8007
+ 10   8007              MAIN:
+ 11   8007 CD BA B7         CALL CLEARSCR   ; Clean screen.
+ 12   800A CD 0F 80         CALL STARTINGSCREEN
+ 13   800D
+ 14   800D              ENDOFCODE:
+ 15   800D 18 FE            JR ENDOFCODE
+ 16   800F
+ 17   800F              ; -------- SCREENS --------
+ 18   800F                  INCLUDE "./Screens/StartScreen.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/StartScreen.asm
+  1+  800F              ;-----------------------------------------------------------------------------------------
+  2+  800F              ; STARTINGSCREEN - Displays the start screen with its corresponding messages.
+  3+  800F              ;-----------------------------------------------------------------------------------------
+  4+  800F              STARTINGSCREEN:
+  5+  800F CD FB 80             CALL LOADSTARTINGSCREEN
+  6+  8012                      ; Would you like to play? (y/n)
+  7+  8012 3E 39                LD A, $39              ; Attribute - Blue font with white background
+  8+  8014 06 06                LD B, 6                ; Row
+  9+  8016 0E 10                LD C, 16               ; Column
+ 10+  8018 DD 21 4A 80          LD IX, PLAYMESSAGE1    ; Would you
+ 11+  801C CD 49 B7             CALL PRINTAT
+ 12+  801F
+ 13+  801F 3E 39                LD A, $39              ; Attribute - Blue font with white background
+ 14+  8021 06 08                LD B, 8                ; Row
+ 15+  8023 0E 0E                LD C, 14               ; Column
+ 16+  8025 DD 21 55 80          LD IX, PLAYMESSAGE2    ; like to play
+ 17+  8029 CD 49 B7             CALL PRINTAT
+ 18+  802C
+ 19+  802C 3E 39                LD A, $39              ; Attribute - Blue font with white background
+ 20+  802E 06 0A                LD B, 10               ; Row
+ 21+  8030 0E 10                LD C, 16               ; Column
+ 22+  8032 DD 21 63 80          LD IX, PLAYMESSAGE3    ; (Y/N)
+ 23+  8036 CD 49 B7             CALL PRINTAT
+ 24+  8039
+ 25+  8039                      ; Cursor
+ 26+  8039 21 57 59             LD HL, $5800 + 10 * 32 + 23    ; Row 10, column 23
+ 27+  803C 36 8F                LD (HL), $8F
+ 28+  803E
+ 29+  803E AF                   XOR A
+ 30+  803F CD 25 B7             CALL READYKEY
+ 31+  8042 FE 01                CP 1
+ 32+  8044 CA 6A 80             JP Z, GAMESCREEN        ; Y - Game
+ 33+  8047 C3 9C 80             JP ENDINGSCREEN                     ; N - End screen
+ 34+  804A              ;-----------------------------------------------------------------------------------------
+ 35+  804A
+ 36+  804A 57 4F 55 4C  PLAYMESSAGE1: DB "WOULD YOU ", 0
+ 36+  804E 44 20 59 4F
+ 36+  8052 55 20 00
+ 37+  8055 4C 49 4B 45  PLAYMESSAGE2: DB "LIKE TO PLAY?", 0
+ 37+  8059 20 54 4F 20
+ 37+  805D 50 4C 41 59
+ 37+  8061 3F 00
+ 38+  8063 20 28 59 2F  PLAYMESSAGE3: DB " (Y/N)", 0
+ 38+  8067 4E 29 00
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/StartScreen.asm
+ 19   806A                  INCLUDE "./Screens/GameScreen.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/GameScreen.asm
+  1+  806A              ;-----------------------------------------------------------------------------------------
+  2+  806A              ; GAMESCREEN - Selects the row for the first U border square and calls the TETRIS_3D
+  3+  806A              ;              routine.
+  4+  806A              ;-----------------------------------------------------------------------------------------
+  5+  806A              GAMESCREEN:
+  6+  806A CD BA B7         CALL CLEARSCR   ; Clean screen.
+  7+  806D CD D5 BA         CALL TETRIS_3D
+  8+  8070 06 01            LD B, 1     ; Square Row
+  9+  8072              ;-----------------------------------------------------------------------------------------
+ 10+  8072
+ 11+  8072              ;-----------------------------------------------------------------------------------------
+ 12+  8072              ; VERTICAL_BORDER - Display the U vertical sides.
+ 13+  8072              ;-----------------------------------------------------------------------------------------
+ 14+  8072              VERTICAL_BORDER:
+ 15+  8072 0E 06            LD C, 6     ; Square Column
+ 16+  8074 3E 38            LD A, $38   ; Square color (hex) -> White
+ 17+  8076 CD F6 BA         CALL DOTYXC ; Paint square
+ 18+  8079
+ 19+  8079 F5               PUSH AF
+ 20+  807A 79               LD A, C
+ 21+  807B C6 13            ADD TETRIS_WIDTH
+ 22+  807D 4F               LD C, A
+ 23+  807E F1               POP AF
+ 24+  807F CD F6 BA         CALL DOTYXC
+ 25+  8082
+ 26+  8082 78               LD A, B
+ 27+  8083 04               INC B
+ 28+  8084 FE 15            CP TETRIS_HEIGHT
+ 29+  8086 20 EA            JR NZ, VERTICAL_BORDER
+ 30+  8088
+ 31+  8088 0E 06            LD C, 6     ; Square Column
+ 32+  808A              ;-----------------------------------------------------------------------------------------
+ 33+  808A
+ 34+  808A              ;-----------------------------------------------------------------------------------------
+ 35+  808A              ; HORIZONTAL_BORDER - Display the U bottom side.
+ 36+  808A              ;-----------------------------------------------------------------------------------------
+ 37+  808A              HORIZONTAL_BORDER:
+ 38+  808A 3E 38            LD A, $38
+ 39+  808C CD F6 BA         CALL DOTYXC
+ 40+  808F
+ 41+  808F 79               LD A, C
+ 42+  8090 0C               INC C
+ 43+  8091 FE 19            CP TETRIS_MAX_WIDTH
+ 44+  8093 20 F5            JR NZ, HORIZONTAL_BORDER
+ 45+  8095              ;-----------------------------------------------------------------------------------------
+ 46+  8095
+ 47+  8095              ;-----------------------------------------------------------------------------------------
+ 48+  8095              ; GAMELOOP - Game simulation.
+ 49+  8095              ;-----------------------------------------------------------------------------------------
+ 50+  8095              GAMELOOP:
+ 51+  8095 18 FE            JR GAMELOOP
+ 52+  8097              ;-----------------------------------------------------------------------------------------
+ 53+  8097
+ 54+  8097              TETRIS_WIDTH EQU 19
+ 55+  8097              TETRIS_MAX_WIDTH EQU 25
+ 56+  8097              TETRIS_HEIGHT EQU 21
+ 57+  8097 47 41 4D 45  GAMEMESSAGE: DB "GAME", 0        ; 0 = delimitador de array.
+ 57+  809B 00
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/GameScreen.asm
+ 20   809C                  INCLUDE "./Screens/EndScreen.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/EndScreen.asm
+  1+  809C              ;-----------------------------------------------------------------------------------------
+  2+  809C              ; ENDINGSCREEN - Displays the end screen with its corresponding messages.
+  3+  809C              ;-----------------------------------------------------------------------------------------
+  4+  809C              ENDINGSCREEN:
+  5+  809C CD BA B7             CALL CLEARSCR   ; Clean screen.
+  6+  809F
+  7+  809F CD 10 9C             CALL LOADENDINGSCREEN
+  8+  80A2
+  9+  80A2                      ; Bye!
+ 10+  80A2 3E 3B                LD A, $3B               ; Attribute - Pink font with white background
+ 11+  80A4 06 04                LD B, 4                 ; Row
+ 12+  80A6 0E 00                LD C, 0                 ; Column
+ 13+  80A8 DD 21 DF 80          LD IX, BYEMESSAGE       ; Bye!
+ 14+  80AC CD 49 B7             CALL PRINTAT
+ 15+  80AF
+ 16+  80AF                      ; Play again? (Y/N)
+ 17+  80AF 3E 3B                LD A, $3B               ; Attribute - Pink font with white background
+ 18+  80B1 06 06                LD B, 6                 ; Row
+ 19+  80B3 0E 00                LD C, 0                 ; Column
+ 20+  80B5 DD 21 E4 80          LD IX, PLAYAGAINMESSAGE ; Play again? (Y/N)
+ 21+  80B9 CD 49 B7             CALL PRINTAT
+ 22+  80BC
+ 23+  80BC                      ; Cursor
+ 24+  80BC 21 D1 58             LD HL, $5800 + 6 * 32 + 17    ; Row 6, column 17
+ 25+  80BF 36 9F                LD (HL), $9F
+ 26+  80C1
+ 27+  80C1 AF                   XOR A
+ 28+  80C2 CD 25 B7             CALL READYKEY
+ 29+  80C5 FE 01                CP 1
+ 30+  80C7 CA 0F 80             JP Z, STARTINGSCREEN    ; Y - Start screen
+ 31+  80CA 3E 3B                LD A, $3B               ; N - End of code.
+ 32+  80CC 06 08                LD B, 8
+ 33+  80CE 0E 0B                LD C, 11
+ 34+  80D0 DD 21 F6 80          LD IX, ENDMESSAGE       ; End!
+ 35+  80D4 CD 49 B7             CALL PRINTAT
+ 36+  80D7 21 D1 58             LD HL, $5800 + 6 * 32 + 17    ; Row 10, column 23
+ 37+  80DA 36 38                LD (HL), $38
+ 38+  80DC
+ 39+  80DC C3 0D 80             JP ENDOFCODE
+ 40+  80DF              ;-----------------------------------------------------------------------------------------
+ 41+  80DF
+ 42+  80DF 42 59 45 21  BYEMESSAGE: DB "BYE!", 0
+ 42+  80E3 00
+ 43+  80E4 50 4C 41 59  PLAYAGAINMESSAGE: DB "PLAY AGAIN? (Y/N)", 0
+ 43+  80E8 20 41 47 41
+ 43+  80EC 49 4E 3F 20
+ 43+  80F0 28 59 2F 4E
+ 43+  80F4 29 00
+ 44+  80F6 45 4E 44 21  ENDMESSAGE: DB "END!", 0
+ 44+  80FA 00
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/EndScreen.asm
+ 21   80FB                  INCLUDE "LoadStartingScreen.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\LoadStartingScreen.asm
+  1+  80FB              ;-----------------------------------------------------------------------------------------
+  2+  80FB              ; LOADSTARTINGSCREEN_LOOP - Set values to paint the graphic.
+  3+  80FB              ;-----------------------------------------------------------------------------------------
+  4+  80FB              LOADSTARTINGSCREEN:
+  5+  80FB 21 10 81         LD HL, LOADSTARTINGSCREEN_START ; HL = Starting addres of screen data
+  6+  80FE
+  7+  80FE                  ; Save used registers
+  8+  80FE C5               PUSH BC
+  9+  80FF D5               PUSH DE
+ 10+  8100
+ 11+  8100 11 00 40         LD DE, $4000 ; Display to video memory area
+ 12+  8103 01 00 1B         LD BC, 6912  ; VidkeoRAM size
+ 13+  8106              ;-----------------------------------------------------------------------------------------
+ 14+  8106
+ 15+  8106              ;-----------------------------------------------------------------------------------------
+ 16+  8106              ; LOADSTARTINGSCREEN_LOOP - Displays the start screen graphic.
+ 17+  8106              ;-----------------------------------------------------------------------------------------
+ 18+  8106              LOADSTARTINGSCREEN_LOOP:
+ 19+  8106 ED A0            LDI ; (DE) = (HL) , DE++, HL++, BC--
+ 20+  8108
+ 21+  8108 78               LD A, B ; Check if BC is 0
+ 22+  8109 B1               OR C ; BC = 0 <=> B|C=0
+ 23+  810A C2 06 81         JP NZ, LOADSTARTINGSCREEN_LOOP ; Next display byte
+ 24+  810D
+ 25+  810D                  ; Retrieve used registers
+ 26+  810D D1               POP DE
+ 27+  810E C1               POP BC
+ 28+  810F
+ 29+  810F C9               RET
+ 30+  8110              ;-----------------------------------------------------------------------------------------
+ 31+  8110
+ 32+  8110              LOADSTARTINGSCREEN_START: INCBIN "./GraphicScreens/StartingScreenTetris.scr"
+ 33+  9C10
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\LoadStartingScreen.asm
+ 22   9C10                  INCLUDE "LoadEndingScreen.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\LoadEndingScreen.asm
+  1+  9C10              ;-----------------------------------------------------------------------------------------
+  2+  9C10              ; LOADENDINGSCREEN -  Set values to paint the graphic.
+  3+  9C10              ;-----------------------------------------------------------------------------------------
+  4+  9C10              LOADENDINGSCREEN:
+  5+  9C10 21 25 9C         LD HL, LOADSTARTINGSCREEN_END ; HL = Starting addres of screen data
+  6+  9C13
+  7+  9C13                  ; Save used registers
+  8+  9C13 C5               PUSH BC
+  9+  9C14 D5               PUSH DE
+ 10+  9C15
+ 11+  9C15 11 00 40         LD DE, $4000 ; Display to video memory area
+ 12+  9C18 01 00 1B         LD BC, 6912  ; VidkeoRAM size
+ 13+  9C1B              ;-----------------------------------------------------------------------------------------
+ 14+  9C1B
+ 15+  9C1B              ;-----------------------------------------------------------------------------------------
+ 16+  9C1B              ; LOADENDINGSCREEN_LOOP - Displays the end screen graphic.
+ 17+  9C1B              ;-----------------------------------------------------------------------------------------
+ 18+  9C1B              LOADENDINGSCREEN_LOOP:
+ 19+  9C1B ED A0            LDI ; (DE) = (HL) , DE++, HL++, BC--
+ 20+  9C1D
+ 21+  9C1D 78               LD A, B ; Check if BC is 0
+ 22+  9C1E B1               OR C ; BC = 0 <=> B|C=0
+ 23+  9C1F C2 1B 9C         JP NZ, LOADENDINGSCREEN_LOOP ; Next display byte
+ 24+  9C22
+ 25+  9C22                  ; Retrieve used registers
+ 26+  9C22 D1               POP DE
+ 27+  9C23 C1               POP BC
+ 28+  9C24
+ 29+  9C24 C9               RET
+ 30+  9C25              ;-----------------------------------------------------------------------------------------
+ 31+  9C25
+ 32+  9C25              LOADSTARTINGSCREEN_END: INCBIN "./GraphicScreens/EndingScreenTetris.scr"
+ 33+  B725
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\LoadEndingScreen.asm
+ 23   B725
+ 24   B725                  INCLUDE "ReadKey.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\ReadKey.asm
+  1+  B725              ;-----------------------------------------------------------------------------------------
+  2+  B725              ; READYKEY - Identifies whether the user presses the Y key.
+  3+  B725              ;	OUT - A = 1 if Y key is pressed.
+  4+  B725              ;-----------------------------------------------------------------------------------------
+  5+  B725              READYKEY:
+  6+  B725 01 FE DF             LD BC, $DFFE       ; Keys: Y, U, I, O, P
+  7+  B728 ED 78                IN A, (C)
+  8+  B72A CB 67                BIT 4, A        ; Key Y
+  9+  B72C 20 09                JR NZ, READNKEY
+ 10+  B72E              LOOPY:
+ 11+  B72E ED 78                IN A, (C)
+ 12+  B730 FE FF                CP $FF
+ 13+  B732 20 FA                JR NZ, LOOPY
+ 14+  B734 3E 01                LD A, 1
+ 15+  B736 C9                   RET
+ 16+  B737              ;-----------------------------------------------------------------------------------------
+ 17+  B737
+ 18+  B737
+ 19+  B737              ;-----------------------------------------------------------------------------------------
+ 20+  B737              ; READNKEY - Identifies whether the user presses the N key.
+ 21+  B737              ;	OUT - A = 2 if N key is pressed.
+ 22+  B737              ;-----------------------------------------------------------------------------------------
+ 23+  B737              READNKEY:
+ 24+  B737 3E 7F                LD A, $7F       ; Keys: B, N, M, SYMB, SPACE
+ 25+  B739 DB FE                IN A, ($FE)
+ 26+  B73B CB 5F                BIT 3, A        ; Key N
+ 27+  B73D 20 E6                JR NZ, READYKEY
+ 28+  B73F              LOOPN:
+ 29+  B73F ED 78                IN A, (C)
+ 30+  B741 FE FF                CP $FF
+ 31+  B743 20 FA                JR NZ, LOOPN
+ 32+  B745 3E 02                LD A, 2
+ 33+  B747 C9                   RET
+ 34+  B748 C9                   RET
+ 35+  B749              ;-----------------------------------------------------------------------------------------
+ 36+  B749
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\ReadKey.asm
+ 25   B749                  INCLUDE "Printat.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\Printat.asm
+  1+  B749              ; -------------------------------
+  2+  B749              ; ZX Spectrum Text print library
+  3+  B749              ; Daniel León - AOC - UFV 2020
+  4+  B749              ; -------------------------------
+  5+  B749
+  6+  B749
+  7+  B749              ; ----------------------------------------------------------------------------------------
+  8+  B749              ; PRINTAT - Print a string in a position and attributes as per registers:
+  9+  B749              ;		IN	A	: Bit 7=1 For Flash / Bit 6=1 For Brigh / Bit 5,4,3 for Paper / Bit 2,1,0 for Ink
+ 10+  B749              ;		IN	B	: Row 0..23
+ 11+  B749              ;		IN	C	: Column 0..31
+ 12+  B749              ;		IN	IX	: Address of text (Text must end in a 0)
+ 13+  B749              ; ----------------------------------------------------------------------------------------
+ 14+  B749 CD 58 B7     PRINTAT:	CALL PREP_PRT				; Update Attribute var &Screen & Attributes pointers
+ 15+  B74C              ; ----------------------------------------------------------------------------------------
+ 16+  B74C              ;		VVV Do not move PRINTSTR below as PRINTAT continues into PRINTSTR routine
+ 17+  B74C              ; ----------------------------------------------------------------------------------------
+ 18+  B74C              ; PRINTSTR - Prints String - IX Points to the String start
+ 19+  B74C              ; ----------------------------------------------------------------------------------------
+ 20+  B74C DD 7E 00     PRINTSTR:   LD A,(IX)					; A Contains first char to print
+ 21+  B74F B7           			OR A						; check for end of string (0)
+ 22+  B750 C8           			RET Z						; Finish printing if 0
+ 23+  B751 CD 86 B7     			CALL PRINTCHNUM
+ 24+  B754 DD 23        			INC IX						; Move to next char in string
+ 25+  B756 18 F4        			JR PRINTSTR					; Start over printing sequence
+ 26+  B758              ; ----------------------------------------------------------------------------------------
+ 27+  B758
+ 28+  B758
+ 29+  B758              ;-----------------------------------------------------------------------------------------
+ 30+  B758              ; PREP_PRT - Updates Print_Attr, SCR & ATTR Vars
+ 31+  B758              ;-----------------------------------------------------------------------------------------
+ 32+  B758 32 CC B7     PREP_PRT:	LD (PRINT_ATTR),A			; Set Attribute
+ 33+  B75B CD 61 B7     PREP_PRT_2:	CALL CRtoSCREEN
+ 34+  B75E C3 73 B7     			JP CRtoATTR
+ 35+  B761              ;-----------------------------------------------------------------------------------------
+ 36+  B761
+ 37+  B761              ;-----------------------------------------------------------------------------------------
+ 38+  B761              ; CRtoSCREEN - Converts a scr char coord into a SCREEN Address   b,c = y,x positions
+ 39+  B761              ;	IN  - B=Row, C=Column
+ 40+  B761              ;	OUT - HL=Address in screen also stored in (SCR_CUR_PTR)
+ 41+  B761              ;	Conversion:
+ 42+  B761              ;			Row FFfff   Column CCCCC
+ 43+  B761              ;			HL=%010FF000 fffCCCCC
+ 44+  B761              ;-----------------------------------------------------------------------------------------
+ 45+  B761              CRtoSCREEN:
+ 46+  B761 78           			LD A,B						; %___FFfff
+ 47+  B762 F6 40        			OR #40						; %010FFfff
+ 48+  B764 E6 F8        			AND #F8						; %010FF000
+ 49+  B766 67           			LD H,A
+ 50+  B767
+ 51+  B767 78           			LD A,B						; %___FFfff
+ 52+  B768 E6 07        			AND #7						; %00000fff
+ 53+  B76A 0F           			RRCA						; %f00000ff
+ 54+  B76B 0F           			RRCA						; %ff00000f
+ 55+  B76C 0F           			RRCA						; %fff00000
+ 56+  B76D B1           			OR C						; %fffCCCCC
+ 57+  B76E 6F           			LD L,A
+ 58+  B76F 22 C8 B7                 LD (SCR_CUR_PTR),HL			; Update Variable
+ 59+  B772 C9                       RET
+ 60+  B773              ; ----------------------------------------------------------------------------------------
+ 61+  B773
+ 62+  B773
+ 63+  B773
+ 64+  B773              ;-----------------------------------------------------------------------------------------
+ 65+  B773              ; CRtoATTR - Converts a screen char coord  into a ATTR Address  b,c = y,x positions
+ 66+  B773              ;	IN  - B=Row, C=Column
+ 67+  B773              ;	OUT - HL=Address in screen also stored in (SCR_ATTR_PTR)
+ 68+  B773              ;	Conversion:
+ 69+  B773              ;			Row FFfff   Column CCCCC
+ 70+  B773              ;			HL=%010110FF fffCCCCC
+ 71+  B773              ;-----------------------------------------------------------------------------------------
+ 72+  B773              CRtoATTR:
+ 73+  B773 78           			LD A,B						; %___FFfff
+ 74+  B774 0F           			RRCA						; %f000FFff
+ 75+  B775 0F           			RRCA						; %ff000FFf
+ 76+  B776 0F           			RRCA						; %fff000FF
+ 77+  B777 6F           			LD L,A
+ 78+  B778 E6 03        			AND 3						; %000000FF	value of FF can be only 00,01,10
+ 79+  B77A F6 58        			OR #58						; %010110FF value will be #58, #59 or #5A
+ 80+  B77C 67           			LD H,A
+ 81+  B77D
+ 82+  B77D 7D           			LD A,L						; %fff000FF
+ 83+  B77E E6 E0        			AND #E0						; %fff00000
+ 84+  B780 B1           			OR C						; %fffCCCCC
+ 85+  B781 6F           			LD L,A
+ 86+  B782
+ 87+  B782 22 CA B7                 LD (SCR_ATTR_PTR),HL		; Update Variable
+ 88+  B785 C9                       RET
+ 89+  B786              ; ----------------------------------------------------------------------------------------
+ 90+  B786
+ 91+  B786
+ 92+  B786
+ 93+  B786              ; ----------------------------------------------------------------------------------------
+ 94+  B786              ; PRINTCHNUM - Prints Char Number N (stored in A)
+ 95+  B786              ;-----------------------------------------------------------------------------------------
+ 96+  B786              PRINTCHNUM:	;SUB 32						; Adjust Ascii to charset
+ 97+  B786 26 00        			LD H,0						; Multiply value by 8 to get to right Char in Charset
+ 98+  B788 6F           			LD L,A
+ 99+  B789 29           			ADD HL,HL
+100+  B78A 29           			ADD HL,HL
+101+  B78B 29           			ADD HL,HL
+102+  B78C 11 CD B6     			LD DE, CHARSET-(8*32)		; Optimize in compile time (instead of sub 32)
+103+  B78F 19           			ADD HL,DE
+104+  B790 EB           			EX  DE,HL					;Value in DE
+105+  B791              			; Continues to printchar below
+106+  B791              ; ----------------------------------------------------------------------------------------
+107+  B791
+108+  B791
+109+  B791              ; ----------------------------------------------------------------------------------------
+110+  B791              ; PRINTCHAR - Prints Char  (DE points to the char. Uses HL as last Cur Pointer)
+111+  B791              ; ----------------------------------------------------------------------------------------
+112+  B791              PRINTCHAR:
+113+  B791 06 08        			LD B,8						; 8 Lines per char
+114+  B793 2A C8 B7                 LD HL, (SCR_CUR_PTR)		; Load Cursor Pointer y,x
+115+  B796
+116+  B796 1A           BYTEPCHAR:	LD A,(DE)					; Get Char to be printed, first line
+117+  B797 77           			LD (HL),A					; Move to Printing location
+118+  B798 24                       INC H						; inc H so next line in char (ZX Spectrum Screen RAM)
+119+  B799 13                       INC DE 						; next line to be printed
+120+  B79A 10 FA                    DJNZ BYTEPCHAR				; Repeat 8 lines
+121+  B79C 3A CC B7                 LD A,(PRINT_ATTR) 			; Load Attributes to print char with
+122+  B79F 2A CA B7                 LD HL, (SCR_ATTR_PTR)
+123+  B7A2 77                       LD (HL),A
+124+  B7A3 21 CA B7                 LD HL, SCR_ATTR_PTR			; Get pointer to ATTR
+125+  B7A6 34                       INC (HL)					; Move Attribute cursor to next char
+126+  B7A7 21 C8 B7     			LD HL, SCR_CUR_PTR
+127+  B7AA 34           			INC (HL)					; update Cursor pointer to next position
+128+  B7AB C9                       RET
+129+  B7AC              ; ----------------------------------------------------------------------------------------
+130+  B7AC
+131+  B7AC
+132+  B7AC
+133+  B7AC              ; ----------------------------------------------------------------------------------------
+134+  B7AC              ; INK2PAPER - moves ink of attribute stored in (PRINT_ATTR) to paper and sets ink to 0
+135+  B7AC              ; 				Sets bright 1 and flash 0
+136+  B7AC              ; ----------------------------------------------------------------------------------------
+137+  B7AC 3A CC B7     INK2PAPER:	LD A, (PRINT_ATTR)		    ; Get storedAttribute
+138+  B7AF E6 07                    AND 7						; get Attr INK in A
+139+  B7B1 07           			RLCA
+140+  B7B2 07           			RLCA
+141+  B7B3 07           			RLCA						; move Ink to Paper
+142+  B7B4 F6 40        			OR 64						; ink 0 bright 1
+143+  B7B6 32 CC B7     			LD (PRINT_ATTR),A		    ; Get storedAttribute
+144+  B7B9 C9           			RET
+145+  B7BA              ; ----------------------------------------------------------------------------------------
+146+  B7BA
+147+  B7BA
+148+  B7BA
+149+  B7BA
+150+  B7BA 21 00 40     CLEARSCR:	LD HL,$4000					; Erases screen by writing 0 to all pixels and attributes
+151+  B7BD 11 01 40     			LD DE,$4001
+152+  B7C0 01 FF 1A     			LD BC,6911
+153+  B7C3 36 00        			LD (HL),0
+154+  B7C5 ED B0        			LDIR
+155+  B7C7 C9           			RET
+156+  B7C8
+157+  B7C8
+158+  B7C8              SCR_CUR_PTR
+158+  B7C8 00 00          	db $00, $00				; Cursor Pointer in Screen (2 bytes) (HL)
+159+  B7CA 00 00        SCR_ATTR_PTR: 	db $00, $00				; Attr Pointer in Screen (2 bytes) (HL)
+160+  B7CC 00           PRINT_ATTR:		db $00					; Attribute used by printchar routine (1 byte)
+161+  B7CD
+162+  B7CD              CHARSET: incbin "charset.bin"			; Charset used
+163+  BACD
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\Printat.asm
+ 26   BACD
+ 27   BACD                  INCLUDE "Tetris_3D.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\Tetris_3D.asm
+  1+  BACD FF 81 81 85  Tetro_3D:   DB $FF, $81, $81, $85, $85, $9D, $81, $FF ; Patrón para los bloques
+  1+  BAD1 85 9D 81 FF
+  2+  BAD5
+  3+  BAD5              TETRIS_3D:
+  4+  BAD5 16 03            LD D,3              ; Los 3 bloques de píxeles
+  5+  BAD7 DD 21 00 40      LD IX,$4000         ; Dirección de comienzo de la VRAM
+  6+  BADB
+  7+  BADB              T3D3:
+  8+  BADB
+  9+  BADB FD 21 CD BA      LD IY,Tetro_3D      ; Primer byte del patrón
+ 10+  BADF
+ 11+  BADF 0E 08            LD C,8              ; 8 bytes del patrón
+ 12+  BAE1              T3D2:
+ 13+  BAE1 06 00            LD B,0              ; 256 bytes de cada línea del patrón
+ 14+  BAE3 FD 7E 00         LD a,(IY)           ; Cargo el valor del patrón
+ 15+  BAE6              T3D1:
+ 16+  BAE6 DD 77 00         LD (IX),a           ; Cargo el patrón en la VideoRam
+ 17+  BAE9 DD 23            INC IX              ; Siguientes 8 pixels
+ 18+  BAEB 10 F9            DJNZ T3D1           ; Fin del bucle
+ 19+  BAED
+ 20+  BAED 0D               DEC C               ; Fin del 2º Bucle
+ 21+  BAEE FD 23            inc IY              ; Siguiente byte del patrón
+ 22+  BAF0 20 EF            JR NZ,T3D2
+ 23+  BAF2
+ 24+  BAF2 15               DEC D               ; Fin del 3º bucle
+ 25+  BAF3 20 E6            JR NZ, T3D3
+ 26+  BAF5
+ 27+  BAF5 C9               RET
+ 28+  BAF6
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\Tetris_3D.asm
+ 28   BAF6                  INCLUDE "AtributeCoordinate.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\AtributeCoordinate.asm
+  1+  BAF6              ;-----------------------------------------------------------------------------------------
+  2+  BAF6              ; DOTYXC - Identifies whether the user presses the Y key.
+  3+  BAF6              ;	  IN - B = Y coordinate.
+  4+  BAF6              ;          C = X coordinate.
+  5+  BAF6              ;          A = Color (hex).
+  6+  BAF6              ;-----------------------------------------------------------------------------------------
+  7+  BAF6              DOTYXC:
+  8+  BAF6 F5               PUSH AF
+  9+  BAF7 68               LD L, B
+ 10+  BAF8 26 00            LD H, 0     ; HL = B
+ 11+  BAFA
+ 12+  BAFA 29               ADD HL, HL
+ 13+  BAFB 29               ADD HL, HL
+ 14+  BAFC 29               ADD HL, HL
+ 15+  BAFD 29               ADD HL, HL
+ 16+  BAFE 29               ADD HL, HL  ; HL = HL *32
+ 17+  BAFF
+ 18+  BAFF 59               LD E,C
+ 19+  BB00 16 00            LD D, 0     ; DE = C
+ 20+  BB02
+ 21+  BB02 19               ADD HL, DE
+ 22+  BB03 11 00 58         LD DE, $5800
+ 23+  BB06
+ 24+  BB06 19               ADD HL, DE  ; HL = Y*32 + X + $5800
+ 25+  BB07
+ 26+  BB07 77               LD (HL), A
+ 27+  BB08 F1               POP AF
+ 28+  BB09 C9               RET
+ 29+  BB0A              ;-----------------------------------------------------------------------------------------
+ 30+  BB0A
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\AtributeCoordinate.asm
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\Tetris.asm
