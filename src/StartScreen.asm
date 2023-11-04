@@ -59,3 +59,4 @@ PLAYMESSAGE3: DB " (Y/N)", 0
         INCLUDE "LoadStartingScreen.asm"
         INCLUDE "LoadEndingScreen.asm"
         INCLUDE "Tetris_3D.asm"
+        INCLUDE "AtributeCoordinate.asm"

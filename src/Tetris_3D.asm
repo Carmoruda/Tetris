@@ -1,6 +1,6 @@
 Tetro_3D:   DB $FF, $81, $81, $85, $85, $9D, $81, $FF ; Patrón para los bloques
 
-Tetris_3D:
+TETRIS_3D:
     LD D,3              ; Los 3 bloques de píxeles
     LD IX,$4000         ; Dirección de comienzo de la VRAM
 
