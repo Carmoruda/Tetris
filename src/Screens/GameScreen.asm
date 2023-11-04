@@ -1,5 +1,5 @@
 ;-----------------------------------------------------------------------------------------
-; GAMESCREEN - Selects the row for the first U border square and calls the TETRIS_3D 
+; GAMESCREEN - Selects the row for the first U border square and calls the TETRIS_3D
 ;              routine.
 ;-----------------------------------------------------------------------------------------
 GAMESCREEN:

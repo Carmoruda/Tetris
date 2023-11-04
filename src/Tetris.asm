@@ -2,16 +2,16 @@
 	SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
     org $8000               ; Program located at $8000 = 32768.
 
-BEGIN:          
+BEGIN:
     DI              ; Disable interruptions.
     LD SP, 0        ; Set the stack pointer to the top of memory.
-    LD HL, $5800    ; First square of the screen. 
+    LD HL, $5800    ; First square of the screen.
 
 MAIN:
     CALL CLEARSCR   ; Clean screen.
     CALL STARTINGSCREEN
 
-ENDOFCODE:            
+ENDOFCODE:
     JR ENDOFCODE
 
 ; -------- SCREENS --------
