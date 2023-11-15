@@ -15,7 +15,7 @@ DOTYXC:
     ADD HL, HL
     ADD HL, HL  ; HL = HL *32
 
-    LD E,C 
+    LD E, C
     LD D, 0     ; DE = C
 
     ADD HL, DE

@@ -177,8 +177,8 @@
  44+  80F6 45 4E 44 21  ENDMESSAGE: DB "END!", 0
  44+  80FA 00
 # file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/EndScreen.asm
- 21   80FB                  INCLUDE "LoadStartingScreen.asm"
-# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\LoadStartingScreen.asm
+ 21   80FB                  INCLUDE "./Screens/LoadStartingScreen.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/LoadStartingScreen.asm
   1+  80FB              ;-----------------------------------------------------------------------------------------
   2+  80FB              ; LOADSTARTINGSCREEN_LOOP - Set values to paint the graphic.
   3+  80FB              ;-----------------------------------------------------------------------------------------
@@ -210,11 +210,11 @@
  29+  810F C9               RET
  30+  8110              ;-----------------------------------------------------------------------------------------
  31+  8110
- 32+  8110              LOADSTARTINGSCREEN_START: INCBIN "./GraphicScreens/StartingScreenTetris.scr"
+ 32+  8110              LOADSTARTINGSCREEN_START: INCBIN "../GraphicScreens/StartingScreenTetris.scr"
  33+  9C10
-# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\LoadStartingScreen.asm
- 22   9C10                  INCLUDE "LoadEndingScreen.asm"
-# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\LoadEndingScreen.asm
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/LoadStartingScreen.asm
+ 22   9C10                  INCLUDE "./Screens/LoadEndingScreen.asm"
+# file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/LoadEndingScreen.asm
   1+  9C10              ;-----------------------------------------------------------------------------------------
   2+  9C10              ; LOADENDINGSCREEN -  Set values to paint the graphic.
   3+  9C10              ;-----------------------------------------------------------------------------------------
@@ -246,9 +246,9 @@
  29+  9C24 C9               RET
  30+  9C25              ;-----------------------------------------------------------------------------------------
  31+  9C25
- 32+  9C25              LOADSTARTINGSCREEN_END: INCBIN "./GraphicScreens/EndingScreenTetris.scr"
+ 32+  9C25              LOADSTARTINGSCREEN_END: INCBIN "../GraphicScreens/EndingScreenTetris.scr"
  33+  B725
-# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\LoadEndingScreen.asm
+# file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\./Screens/LoadEndingScreen.asm
  23   B725
  24   B725                  INCLUDE "ReadKey.asm"
 # file opened: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\ReadKey.asm
@@ -522,4 +522,5 @@
  29+  BB0A              ;-----------------------------------------------------------------------------------------
  30+  BB0A
 # file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\AtributeCoordinate.asm
+ 29   BB0A
 # file closed: C:\Users\rmore\Documentos\Universidad\2ndo\AOC\TetrisASM\src\Tetris.asm

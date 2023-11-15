@@ -1,5 +1,5 @@
 ;-----------------------------------------------------------------------------------------
-; GAMESCREEN - Selects the row for the first U border square and calls the TETRIS_3D 
+; GAMESCREEN - Selects the row for the first U border square and calls the TETRIS_3D
 ;              routine.
 ;-----------------------------------------------------------------------------------------
 GAMESCREEN:
@@ -54,4 +54,9 @@ GAMELOOP:
 TETRIS_WIDTH EQU 19
 TETRIS_MAX_WIDTH EQU 25
 TETRIS_HEIGHT EQU 21
-GAMEMESSAGE: DB "GAME", 0        ; 0 = delimitador de array.
+GAMEMESSAGE: DB "GAME", 0
+
+; CALL DIBUJA
+; ESPERA (El tiempo de espera debe ser variable)
+; BORRAMOS LA FORMA
+; SUMAMOS 1 A LA FILA
