@@ -23,4 +23,3 @@ CHECKCOLUMNS:
     DEC C               ; Column -= 1
     JP NZ, PAINTLOOP    ; Yes - Paint
     INC HL              ; No - Next square
-    DJNZ PAINTLOOP      ; Next square
