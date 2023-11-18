@@ -4,26 +4,26 @@
 ; -------------------------------
 
 
-; ----------------------------------------------------------------------------------------   
+; ----------------------------------------------------------------------------------------
 ; PRINTAT - Print a string in a position and attributes as per registers:
 ;		IN	A	: Bit 7=1 For Flash / Bit 6=1 For Brigh / Bit 5,4,3 for Paper / Bit 2,1,0 for Ink
 ;		IN	B	: Row 0..23
 ;		IN	C	: Column 0..31
 ;		IN	IX	: Address of text (Text must end in a 0)
-; ---------------------------------------------------------------------------------------- 
+; ----------------------------------------------------------------------------------------
 PRINTAT:	CALL PREP_PRT				; Update Attribute var &Screen & Attributes pointers
-; ---------------------------------------------------------------------------------------- 
+; ----------------------------------------------------------------------------------------
 ;		VVV Do not move PRINTSTR below as PRINTAT continues into PRINTSTR routine
-; ----------------------------------------------------------------------------------------   
+; ----------------------------------------------------------------------------------------
 ; PRINTSTR - Prints String - IX Points to the String start
-; ----------------------------------------------------------------------------------------      
+; ----------------------------------------------------------------------------------------
 PRINTSTR:   LD A,(IX)					; A Contains first char to print
 			OR A						; check for end of string (0)
 			RET Z						; Finish printing if 0
-			CALL PRINTCHNUM			
+			CALL PRINTCHNUM
 			INC IX						; Move to next char in string
-			JR PRINTSTR					; Start over printing sequence	
-; ----------------------------------------------------------------------------------------  
+			JR PRINTSTR					; Start over printing sequence
+; ----------------------------------------------------------------------------------------
 
 
 ;-----------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ PRINTSTR:   LD A,(IX)					; A Contains first char to print
 ;-----------------------------------------------------------------------------------------
 PREP_PRT:	LD (PRINT_ATTR),A			; Set Attribute
 PREP_PRT_2:	CALL CRtoSCREEN
-			JP CRtoATTR				
+			JP CRtoATTR
 ;-----------------------------------------------------------------------------------------
 
 ;-----------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ CRtoSCREEN:
 			OR #40						; %010FFfff
 			AND #F8						; %010FF000
 			LD H,A
-	
+
 			LD A,B						; %___FFfff
 			AND #7						; %00000fff
 			RRCA						; %f00000ff
@@ -57,7 +57,7 @@ CRtoSCREEN:
 			LD L,A
             LD (SCR_CUR_PTR),HL			; Update Variable
             RET
-; ---------------------------------------------------------------------------------------- 
+; ----------------------------------------------------------------------------------------
 
 
 
@@ -69,7 +69,7 @@ CRtoSCREEN:
 ;			Row FFfff   Column CCCCC
 ;			HL=%010110FF fffCCCCC
 ;-----------------------------------------------------------------------------------------
-CRtoATTR:	
+CRtoATTR:
 			LD A,B						; %___FFfff
 			RRCA						; %f000FFff
 			RRCA						; %ff000FFf
@@ -90,9 +90,9 @@ CRtoATTR:
 
 
 
-; ----------------------------------------------------------------------------------------   
+; ----------------------------------------------------------------------------------------
 ; PRINTCHNUM - Prints Char Number N (stored in A)
-;----------------------------------------------------------------------------------------- 
+;-----------------------------------------------------------------------------------------
 PRINTCHNUM:	;SUB 32						; Adjust Ascii to charset
 			LD H,0						; Multiply value by 8 to get to right Char in Charset
 			LD L,A
@@ -105,44 +105,44 @@ PRINTCHNUM:	;SUB 32						; Adjust Ascii to charset
 			; Continues to printchar below
 ; ----------------------------------------------------------------------------------------
 
-		
-; ----------------------------------------------------------------------------------------   
+
+; ----------------------------------------------------------------------------------------
 ; PRINTCHAR - Prints Char  (DE points to the char. Uses HL as last Cur Pointer)
-; ----------------------------------------------------------------------------------------  
+; ----------------------------------------------------------------------------------------
 PRINTCHAR:
 			LD B,8						; 8 Lines per char
-            LD HL, (SCR_CUR_PTR)		; Load Cursor Pointer y,x 
-            
+            LD HL, (SCR_CUR_PTR)		; Load Cursor Pointer y,x
+
 BYTEPCHAR:	LD A,(DE)					; Get Char to be printed, first line
-			LD (HL),A					; Move to Printing location           
+			LD (HL),A					; Move to Printing location
             INC H						; inc H so next line in char (ZX Spectrum Screen RAM)
             INC DE 						; next line to be printed
             DJNZ BYTEPCHAR				; Repeat 8 lines
             LD A,(PRINT_ATTR) 			; Load Attributes to print char with
-            LD HL, (SCR_ATTR_PTR)		
+            LD HL, (SCR_ATTR_PTR)
             LD (HL),A
             LD HL, SCR_ATTR_PTR			; Get pointer to ATTR
             INC (HL)					; Move Attribute cursor to next char
 			LD HL, SCR_CUR_PTR
 			INC (HL)					; update Cursor pointer to next position
             RET
-; ----------------------------------------------------------------------------------------  
+; ----------------------------------------------------------------------------------------
 
 
 
-; ----------------------------------------------------------------------------------------   
+; ----------------------------------------------------------------------------------------
 ; INK2PAPER - moves ink of attribute stored in (PRINT_ATTR) to paper and sets ink to 0
 ; 				Sets bright 1 and flash 0
-; ---------------------------------------------------------------------------------------- 
-INK2PAPER:	LD A, (PRINT_ATTR)		    ; Get storedAttribute         
+; ----------------------------------------------------------------------------------------
+INK2PAPER:	LD A, (PRINT_ATTR)		    ; Get storedAttribute
             AND 7						; get Attr INK in A
 			RLCA
 			RLCA
 			RLCA						; move Ink to Paper
 			OR 64						; ink 0 bright 1
-			LD (PRINT_ATTR),A		    ; Get storedAttribute     
+			LD (PRINT_ATTR),A		    ; Get storedAttribute
 			RET
-; ---------------------------------------------------------------------------------------- 
+; ----------------------------------------------------------------------------------------
 
 
 
@@ -159,5 +159,5 @@ SCR_CUR_PTR : 	db $00, $00				; Cursor Pointer in Screen (2 bytes) (HL)
 SCR_ATTR_PTR: 	db $00, $00				; Attr Pointer in Screen (2 bytes) (HL)
 PRINT_ATTR:		db $00					; Attribute used by printchar routine (1 byte)
 
-CHARSET: incbin "charset.bin"			; Charset used
+CHARSET: incbin "../charset.bin"			; Charset used
 

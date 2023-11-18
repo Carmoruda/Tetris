@@ -9,9 +9,9 @@ BEGIN:
 
 MAIN:
     CALL CLEARSCR       ; Clean screen.
-    CALL STARTINGSCREEN
-    CALL GAMESCREEN
-    CALL ENDINGSCREEN
+    CALL STARTINGSCREEN ; Initial screen.
+    CALL GAMESCREEN     ; Game screen.
+    CALL ENDINGSCREEN   ; End screen.
 
 ENDOFCODE:
     JR ENDOFCODE
@@ -28,8 +28,12 @@ WAITING_TIME_TRESHOLD EQU $05
     INCLUDE "./Screens/LoadStartingScreen.asm"
     INCLUDE "./Screens/LoadEndingScreen.asm"
 
-    INCLUDE "ReadKey.asm"
-    INCLUDE "Printat.asm"
+; -------- TETROMINOS --------
+    INCLUDE "./Tetrominos/Tetrominos.asm"
+    INCLUDE "./Tetrominos/PaintTetrominos.asm"
 
-    INCLUDE "Tetris_3D.asm"
-    INCLUDE "AtributeCoordinate.asm"
+; -------- FUNCTIONS --------
+    INCLUDE "./Functions/ReadKey.asm"
+    INCLUDE "./Functions/Printat.asm"
+    INCLUDE "./Functions/Tetris_3D.asm"
+    INCLUDE "./Functions/AtributeCoordinate.asm"

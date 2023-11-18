@@ -5,7 +5,7 @@ TETRIS_3D:
     LD IX,$4000         ; Dirección de comienzo de la VRAM
 
 T3D3:
-    
+
     LD IY,Tetro_3D      ; Primer byte del patrón
 
     LD C,8              ; 8 bytes del patrón

@@ -29,8 +29,8 @@ STARTINGSCREEN:
         XOR A
         CALL READYKEY
         CP 1
-        JP Z, RET        ; Y - Game
-        JP ENDINGSCREEN  ; N - End                  ; N - End screen
+        JP NZ, ENDINGSCREEN ; Y - Game
+        RET                 ; N - End
 ;-----------------------------------------------------------------------------------------
 
 PLAYMESSAGE1: DB "WOULD YOU ", 0

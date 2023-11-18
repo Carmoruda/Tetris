@@ -35,13 +35,14 @@ VERTICAL_BORDER:
 ; HORIZONTAL_BORDER - Display the U bottom side.
 ;-----------------------------------------------------------------------------------------
 HORIZONTAL_BORDER:
-    LD A, $38
-    CALL DOTYXC
+    LD A, $38   ; Square color (hex) -> White
+    CALL DOTYXC ; Paint square
 
     LD A, C
     INC C
     CP TETRIS_MAX_WIDTH
     JR NZ, HORIZONTAL_BORDER
+    CALL PAINT
 ;-----------------------------------------------------------------------------------------
 
 ;-----------------------------------------------------------------------------------------
