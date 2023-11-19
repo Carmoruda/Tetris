@@ -1,0 +1,5 @@
+# Temporary files
+.tmp
+
+# VS Code files
+.vscode

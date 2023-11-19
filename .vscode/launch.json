@@ -3,7 +3,7 @@
     "configurations": [
         {
             "rootFolder": "${workspaceFolder}",
-	    "type": "dezog",
+            "type": "dezog",
             "request": "launch",
             "name": "Simulator",
             "remoteType": "zsim",
@@ -21,8 +21,13 @@
                 }
             ],
             "topOfStack": "0",
-           "loadObjs": [{"path": "${fileDirname}/${fileBasenameNoExtension}.bin", "start": "0x8000"}],
-           "execAddress": "0x8000"
+            "loadObjs": [
+                {
+                    "path": "${fileDirname}/${fileBasenameNoExtension}.bin",
+                    "start": "0x8000"
+                }
+            ],
+            "execAddress": "0x8000"
         }
     ]
 }

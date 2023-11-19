@@ -29,4 +29,4 @@ LOADENDINGSCREEN_LOOP:
     RET
 ;-----------------------------------------------------------------------------------------
 
-LOADSTARTINGSCREEN_END: INCBIN "./GraphicScreens/EndingScreenTetris.scr"
+LOADSTARTINGSCREEN_END: INCBIN "../GraphicScreens/EndingScreenTetris.scr"

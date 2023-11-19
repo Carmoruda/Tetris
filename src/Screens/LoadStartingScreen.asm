@@ -29,4 +29,4 @@ LOADSTARTINGSCREEN_LOOP:
     RET
 ;-----------------------------------------------------------------------------------------
 
-LOADSTARTINGSCREEN_START: INCBIN "./GraphicScreens/StartingScreenTetris.scr"
+LOADSTARTINGSCREEN_START: INCBIN "../GraphicScreens/StartingScreenTetris.scr"
