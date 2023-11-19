@@ -42,8 +42,34 @@ HORIZONTAL_BORDER:
     INC C
     CP TETRIS_MAX_WIDTH
     JR NZ, HORIZONTAL_BORDER
-    CALL PAINT
 ;-----------------------------------------------------------------------------------------
+
+GAME_TETROMINO:
+    LD IX, T_I2     ; Tetromino
+
+    LD A, 1         ; Screen row
+    LD (ROWS), A    ; Save row
+
+    LD A, 15        ; Screen column
+    LD (COLUMNS), A ; Save column
+
+    CALL PAINT_TETROMINO
+
+MOVE_TETROMINO_DOWN:
+    CALL ERASE_TETROMINO
+    LD A, (ROWS)
+    INC A
+    LD (ROWS), A
+    PUSH AF
+    CALL PAINT_TETROMINO
+    POP AF
+    CP 19
+    JR NZ, MOVE_TETROMINO_DOWN
+    CALL ERASE_TETROMINO
+    LD A, (ROWS)
+    INC A
+    LD (ROWS), A
+    CALL PAINT_TETROMINO
 
 ;-----------------------------------------------------------------------------------------
 ; GAMELOOP - Game simulation.
