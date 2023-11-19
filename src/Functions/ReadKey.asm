@@ -4,7 +4,7 @@
 ;-----------------------------------------------------------------------------------------
 READYKEY:
         LD BC, $DFFE       ; Keys: Y, U, I, O, P
-        IN A, (C)     
+        IN A, (C)
         BIT 4, A        ; Key Y
         JR NZ, READNKEY
 LOOPY:

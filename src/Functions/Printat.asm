@@ -160,4 +160,3 @@ SCR_ATTR_PTR: 	db $00, $00				; Attr Pointer in Screen (2 bytes) (HL)
 PRINT_ATTR:		db $00					; Attribute used by printchar routine (1 byte)
 
 CHARSET: incbin "../charset.bin"			; Charset used
-
