@@ -3,23 +3,29 @@
 PAINT:
     LD HL, 0x5800
     LD IX, T_0
-    LD B, (IX)      ; Rows
-    LD C, (IX + 1)  ; Columns
-    INC IX: INC IX
+    LD IY, IX
+    LD E, (IX)      ; Rows
+    INC IY: INC IY
 
-PAINTLOOP:
-    LD A, (IX)          ; A = Square
-    INC IX              ; Next square
+OUTERLOOP:
+    LD D, (IX + 1)  ; Columns
+
+INNERLOOP:
+    LD A, (IY)          ; A = Square
+    INC IY              ; Next square
     CP 0                ; Square = 0
     JP NZ, PAINTLOOP2   ; If so, paint
-    JP CHECKCOLUMNS        ; Else, skip
+    JP CHECKCOLUMNS     ; Else, skip
 
 PAINTLOOP2:
     LD (HL), A          ; Paint
     INC HL              ; Next pixel
 CHECKCOLUMNS:
-    LD A, C             ; A = C
+    LD A, D             ; A = C
     CP 0                ; Column = 0?
-    DEC C               ; Column -= 1
-    JP NZ, PAINTLOOP    ; Yes - Paint
-    INC HL              ; No - Next square
+    DEC D               ; Column -= 1
+    JP NZ, INNERLOOP    ; Yes - Paint
+    LD A, E
+    CP 0
+    DEC E
+    JP NZ, OUTERLOOP
