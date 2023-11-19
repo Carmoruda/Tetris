@@ -1,31 +1,42 @@
-; IX - Tetromino pointer
-; Ancho EQU IC1 - IB0
+;-----------------------------------------------------------------------------------------
+; PAINTTETROMINOS - Paint a tetromino.
+;	  IN - IX = Tetromino we want to paint.
+;           B = Row of the screen in which we want to paint.
+;           C = Column of the screen in which we want to paint.
+;-----------------------------------------------------------------------------------------
 PAINT:
-    LD HL, 0x5800
-    LD IX, T_0
+    LD IX, T_T1
     LD IY, IX
-    LD E, (IX)      ; Rows
+    LD E, (IX)      ; Number of rows
+    LD B, 1         ; Screen row
     INC IY: INC IY
 
 OUTERLOOP:
-    LD D, (IX + 1)  ; Columns
+    LD D, (IX + 1)  ; Number of columns olumns
+    LD C, 1         ; Screen column
 
 INNERLOOP:
     LD A, (IY)          ; A = Square
-    INC IY              ; Next square
-    CP 0                ; Square = 0
-    JP NZ, PAINTLOOP2   ; If so, paint
-    JP CHECKCOLUMNS     ; Else, skip
+    INC IY              ; IY = Next square
+    CP 0                ; Square = 0?
+    JP NZ, PAINTLOOP   ; No - Paint
+    INC C               ; Next column
+    JP CHECKLOOPS       ; Yes - Check loop conditions
 
-PAINTLOOP2:
-    LD (HL), A          ; Paint
-    INC HL              ; Next pixel
-CHECKCOLUMNS:
-    LD A, D             ; A = C
+PAINTLOOP:
+    PUSH DE
+    CALL DOTYXC         ; Paint square
+    POP DE
+    INC C               ; Next column
+CHECKLOOPS:
+    LD A, D             ; A = D
     CP 0                ; Column = 0?
     DEC D               ; Column -= 1
     JP NZ, INNERLOOP    ; Yes - Paint
-    LD A, E
-    CP 0
-    DEC E
-    JP NZ, OUTERLOOP
+    INC B               ; Next row
+    LD A, E             ; A = E
+    CP 0                ; Row = 0?
+    DEC E               ; Row -= 1
+    JP NZ, OUTERLOOP    ; No - Loop
+    RET
+;-----------------------------------------------------------------------------------------
