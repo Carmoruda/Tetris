@@ -45,7 +45,7 @@ HORIZONTAL_BORDER:
 ;-----------------------------------------------------------------------------------------
 
 GAME_TETROMINO:
-    LD IX, T_0     ; Tetromino
+    CALL RANDOM_NUMBER
 
     LD A, 1         ; Screen row
     LD (ROWS), A    ; Save row
@@ -79,11 +79,11 @@ END_MOVE_TETROMINO_DOWN:
 ; GAMELOOP - Game simulation.
 ;-----------------------------------------------------------------------------------------
 GAMELOOP:
-    JR GAMELOOP
+    JP GAME_TETROMINO
 ;-----------------------------------------------------------------------------------------
 
 DELAY:
-    LD HL, 10000
+    LD HL, 100
 DELAY_LOOP:
     DEC HL
     LD A, H

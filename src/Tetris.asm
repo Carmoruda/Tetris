@@ -35,6 +35,7 @@ COLUMNS: DB 0
     INCLUDE "./Tetrominos/Tetrominos.asm"
     INCLUDE "./Tetrominos/PaintTetrominos.asm"
     INCLUDE "./Tetrominos/EraseTetrominos.asm"
+    INCLUDE "./Tetrominos/RandomTetrominos.asm"
 
 ; -------- FUNCTIONS --------
     INCLUDE "./Functions/ReadKey.asm"

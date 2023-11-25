@@ -1,0 +1,19 @@
+RANDOM_NUMBER:
+    LD A, R ; Generate a random number between 0 and 255.
+    AND 31
+    CP 19
+    JR C, CONTINUE_RANDOM
+    SUB 19
+
+CONTINUE_RANDOM:
+    LD IX, T_0
+    LD DE, TETROMINO_WIDTH
+    OR A
+    JR Z, CONTINUE_RANDOM_2
+OTHER:
+    ADD IX, DE
+    DEC A
+    JR NZ, OTHER
+
+CONTINUE_RANDOM_2:
+    RET
