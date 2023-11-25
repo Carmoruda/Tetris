@@ -45,7 +45,7 @@ HORIZONTAL_BORDER:
 ;-----------------------------------------------------------------------------------------
 
 GAME_TETROMINO:
-    LD IX, T_I2     ; Tetromino
+    LD IX, T_0     ; Tetromino
 
     LD A, 1         ; Screen row
     LD (ROWS), A    ; Save row
@@ -62,9 +62,13 @@ MOVE_TETROMINO_DOWN:
     LD (ROWS), A
     PUSH AF
     CALL PAINT_TETROMINO
+
+    CALL DELAY
     POP AF
-    CP 19
+    CP 20
     JR NZ, MOVE_TETROMINO_DOWN
+
+END_MOVE_TETROMINO_DOWN:
     CALL ERASE_TETROMINO
     LD A, (ROWS)
     INC A
@@ -77,6 +81,15 @@ MOVE_TETROMINO_DOWN:
 GAMELOOP:
     JR GAMELOOP
 ;-----------------------------------------------------------------------------------------
+
+DELAY:
+    LD HL, 10000
+DELAY_LOOP:
+    DEC HL
+    LD A, H
+    OR 0
+    JR NZ, DELAY_LOOP
+    RET
 
 TETRIS_WIDTH EQU 19
 TETRIS_MAX_WIDTH EQU 25
