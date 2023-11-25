@@ -28,6 +28,7 @@ STARTINGSCREEN:
 
         XOR A
         CALL READYKEY
+        LD A, (PRESSED_KEY)
         CP 'Y'
         JP NZ, ENDINGSCREEN ; Y - Game
         RET                 ; N - End

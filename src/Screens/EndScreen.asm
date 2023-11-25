@@ -26,6 +26,7 @@ ENDINGSCREEN:
 
         XOR A
         CALL READYKEY
+        LD A, (PRESSED_KEY)
         CP 'Y'
         JP Z, STARTINGSCREEN    ; Y - Start screen
         LD A, $3B               ; N - End of code.
