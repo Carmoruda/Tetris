@@ -21,6 +21,9 @@ WAITING_TIME: DW $1FFF  ; Wait time (in ms).
 WAITING_TIME_SUBTRACT EQU $10   ; Wait time decrement.
 WAITING_TIME_TRESHOLD EQU $05
 
+ROWS: DB 0
+COLUMNS: DB 0
+
 ; -------- SCREENS --------
     INCLUDE "./Screens/StartScreen.asm"
     INCLUDE "./Screens/GameScreen.asm"
@@ -31,6 +34,8 @@ WAITING_TIME_TRESHOLD EQU $05
 ; -------- TETROMINOS --------
     INCLUDE "./Tetrominos/Tetrominos.asm"
     INCLUDE "./Tetrominos/PaintTetrominos.asm"
+    INCLUDE "./Tetrominos/EraseTetrominos.asm"
+    INCLUDE "./Tetrominos/RandomTetrominos.asm"
 
 ; -------- FUNCTIONS --------
     INCLUDE "./Functions/ReadKey.asm"
