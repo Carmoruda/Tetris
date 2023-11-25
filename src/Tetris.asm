@@ -19,8 +19,8 @@ ENDOFCODE:
 ; -------- VARIABLES -------
 WAITING_TIME: DW $1FFF  ; Wait time (in ms).
 WAITING_TIME_SUBTRACT EQU $10   ; Wait time decrement.
-WAITING_TIME_TRESHOLD EQU $05
 
+PRESSED_KEY: DB " ", 0       ; Pressed key.
 ROWS: DB 0
 COLUMNS: DB 0
 

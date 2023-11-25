@@ -28,7 +28,7 @@ STARTINGSCREEN:
 
         XOR A
         CALL READYKEY
-        CP 1
+        CP 'Y'
         JP NZ, ENDINGSCREEN ; Y - Game
         RET                 ; N - End
 ;-----------------------------------------------------------------------------------------
