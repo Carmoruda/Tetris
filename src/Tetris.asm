@@ -2,10 +2,12 @@
 	SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
     org $8000       ; Program located at $8000 = 32768.
 
+
 BEGIN:
     DI              ; Disable interruptions.
     LD SP, 0        ; Set the stack pointer to the top of memory.
     LD HL, $5800    ; First square of the screen.
+
 
 MAIN:
     CALL CLEARSCR       ; Clean screen.
@@ -13,13 +15,16 @@ MAIN:
     CALL GAMESCREEN     ; Game screen.
     CALL ENDINGSCREEN   ; End screen.
 
+
 ENDOFCODE:
     JR ENDOFCODE
+
 
 ; -------- VARIABLES -------
 PRESSED_KEY: DB " ", 0    ; Pressed key.
 ROWS: DB 0                ; Position of the tetromino in the rows.
 COLUMNS: DB 0             ; Position of the tetromino in the columns.
+
 
 ; -------- SCREENS --------
     INCLUDE "./Screens/StartScreen.asm"
