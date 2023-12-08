@@ -1,6 +1,6 @@
     DEVICE ZXSPECTRUM48
 	SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
-    org $8000               ; Program located at $8000 = 32768.
+    org $8000       ; Program located at $8000 = 32768.
 
 BEGIN:
     DI              ; Disable interruptions.
@@ -17,12 +17,9 @@ ENDOFCODE:
     JR ENDOFCODE
 
 ; -------- VARIABLES -------
-WAITING_TIME: DW $1FFF  ; Wait time (in ms).
-WAITING_TIME_SUBTRACT EQU $10   ; Wait time decrement.
-
-PRESSED_KEY: DB " ", 0       ; Pressed key.
-ROWS: DB 0
-COLUMNS: DB 0
+PRESSED_KEY: DB " ", 0    ; Pressed key.
+ROWS: DB 0                ; Position of the tetromino in the rows.
+COLUMNS: DB 0             ; Position of the tetromino in the columns.
 
 ; -------- SCREENS --------
     INCLUDE "./Screens/StartScreen.asm"
