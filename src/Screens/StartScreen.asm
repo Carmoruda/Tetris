@@ -2,7 +2,9 @@
 ; STARTINGSCREEN - Displays the start screen with its corresponding messages.
 ;-----------------------------------------------------------------------------------------
 STARTINGSCREEN:
+        CALL CLEARSCR   ; Clean screen.
         CALL LOADSTARTINGSCREEN
+
         ; Would you like to play? (y/n)
         LD A, $39              ; Attribute - Blue font with white background
         LD B, 6                ; Row
@@ -33,6 +35,7 @@ STARTINGSCREEN:
         JP NZ, ENDINGSCREEN ; Y - Game
         RET                 ; N - End
 ;-----------------------------------------------------------------------------------------
+
 
 ; -------- SCREEN TEXT -------
 PLAYMESSAGE1: DB "WOULD YOU ", 0

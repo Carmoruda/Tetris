@@ -3,7 +3,6 @@
 ;-----------------------------------------------------------------------------------------
 ENDINGSCREEN:
         CALL CLEARSCR   ; Clean screen.
-
         CALL LOADENDINGSCREEN
 
         ; Bye!
@@ -22,24 +21,28 @@ ENDINGSCREEN:
 
         ; Cursor
         LD HL, $5800 + 6 * 32 + 17    ; Row 6, column 17
-        LD (HL), $9F
+        LD (HL), $9F                  ; Attribute - White font with pink background
 
-        XOR A
-        CALL READYKEY
-        LD A, (PRESSED_KEY)
+        XOR A                ; A = 0
+        CALL READYKEY        ; Wait for a key to be pressed
+        LD A, (PRESSED_KEY)  ; A = Key pressed
         CP 'Y'
-        JP Z, STARTINGSCREEN    ; Y - Start screen
-        LD A, $3B               ; N - End of code.
-        LD B, 8
-        LD C, 11
-        LD IX, ENDMESSAGE       ; End!
+        JP Z, STARTINGSCREEN    ; If Y, go to starting screen
+
+        ; End!
+        LD A, $3B              ; Attribute - Pink font with white background
+        LD B, 8                ; Row
+        LD C, 11               ; Column
+        LD IX, ENDMESSAGE      ; End!
         CALL PRINTAT
         LD HL, $5800 + 6 * 32 + 17    ; Row 10, column 23
-        LD (HL), $38
+        LD (HL), $38                  ; Attribute - White background.
 
         JP ENDOFCODE
 ;-----------------------------------------------------------------------------------------
 
+
+; -------- SCREEN TEXT -------
 BYEMESSAGE: DB "BYE!", 0
 PLAYAGAINMESSAGE: DB "PLAY AGAIN? (Y/N)", 0
 ENDMESSAGE: DB "END!", 0
