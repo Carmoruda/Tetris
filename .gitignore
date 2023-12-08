@@ -3,3 +3,10 @@
 
 # VS Code files
 .vscode
+
+# Tetris files
+Tetris.bin
+Tetris.lst
+Tetris.sld
+Tetris - Jorge, Pablo, Matias y Carmen.asm
+Tetris - Jorge, Pablo, Matias y Carmen.lst
