@@ -5,9 +5,7 @@
 ;           COLUMNS = Column of the screen in which we want to ERASE.
 ;-----------------------------------------------------------------------------------------
 ERASE_TETROMINO:
-    LD IY, IX       ; IY = Tetromino we want to erase
     LD E, (IX)      ; E = Number of rows
-    INC IY: INC IY  ; IY = Pointer to the first square
     LD A, (ROWS)    ; A = Row of the screen in which we want to erase
     LD B, A         ; B = Row of the screen in which we want to erase
 ;-----------------------------------------------------------------------------------------
@@ -28,7 +26,10 @@ ERASE_TETROMINO_OUTERLOOP:
 
 ;-----------------------------------------------------------------------------------------
 ; ERASE_TETROMINO_INNERLOOP - Loops through the columns of a row and erases the squares.
-;	  IN -  C = Column of the screen in which we want to ERASE.
+;	  IN -  B = Row of the screen in which we want to ERASE.
+;           C = Column of the screen in which we want to ERASE.
+;           D = Number of columns.
+;           E = Number of rows.
 ;-----------------------------------------------------------------------------------------
 ERASE_TETROMINO_INNERLOOP:
     PUSH DE
