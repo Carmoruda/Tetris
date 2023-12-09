@@ -47,6 +47,7 @@ NEXT_TETROMINO_POINTER: DW 0    ; Pointer to the next tetromino.
     INCLUDE "./Tetrominos/EraseTetrominos.asm"
     INCLUDE "./Tetrominos/RandomTetrominos.asm"
     INCLUDE "./Tetrominos/MoveTetrominos.asm"
+    INCLUDE "./Tetrominos/RotateTetrominos.asm"
 
 ; -------- FUNCTIONS --------
     INCLUDE "./Functions/ReadKey.asm"
@@ -58,7 +59,6 @@ NEXT_TETROMINO_POINTER: DW 0    ; Pointer to the next tetromino.
 ; TODO: Cursor must echo the key pressed (StarttingScreen and EndingScreen).
 ; TODO: Speeded-up delay.
 ; TODO: Lower threshold delay.
-; TODO: Move tetronimo (right and left).
 ; TODO: Rotate tetromino (right and left).
 ; TODO: Press enter to drop tetromino faster.
 ; TODO: No blocking of movement through continuous key pressing.

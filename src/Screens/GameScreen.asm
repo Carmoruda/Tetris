@@ -122,6 +122,10 @@ TETRIS_ACTION:
     JP Z, MOVE_TETROMINO_LEFT  ; Move tetromino to the left
     CP 'C'                     ; If PRESSED_KEY == 'C'
     JP Z, MOVE_TETROMINO_RIGHT ; Move tetromino to the right
+    CP 'J'
+    JP Z, ROTATE_TETROMINO_LEFT
+    CP 'L'
+    JP Z, ROTATE_TETROMINO_RIGHT
 
     CALL MOVE_TETROMINO_DOWN ; Move tetromino down
 
