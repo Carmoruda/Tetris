@@ -41,5 +41,3 @@ STARTINGSCREEN:
 PLAYMESSAGE1: DB "WOULD YOU ", 0
 PLAYMESSAGE2: DB "LIKE TO PLAY?", 0
 PLAYMESSAGE3: DB " (Y/N)", 0
-
-; TODO: Change cursor. It must echo de pressed key.

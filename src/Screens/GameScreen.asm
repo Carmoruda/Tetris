@@ -75,6 +75,15 @@ GAME_TETROMINO:
 
     LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
     CALL PAINT_TETROMINO       ; Paint tetromino
+
+TETROMINO_ACTIONS:
+    CALL READ_ACTION_KEYS
+    LD A, (PRESSED_KEY)
+    CP 'Z'
+    JP Z, MOVE_LEFT
+    CP 'C'
+    JP Z, MOVE_RIGHT
+    JP TETROMINO_ACTIONS
 ;-----------------------------------------------------------------------------------------
 
 
@@ -101,10 +110,10 @@ GAME_NEXT_TETROMINO:
     CALL PAINT_TETROMINO ; Paint next tetromino
 
     LD A, (GAME_Y_POS) ; A = Row where the current tetromino should be painted.
-    LD (ROWS), A       ; ROWS = Tetromino number of rows
+    LD (ROWS), A       ; ROWS = Current tetromino row position
 
     LD A, (GAME_X_POS) ; A = Column where the current tetromino should be painted.
-    LD (COLUMNS), A    ; COLUMNS = Tetromino number of columns
+    LD (COLUMNS), A    ; COLUMNS = Current tetromino column position
     POP AF
 ;-----------------------------------------------------------------------------------------
 
@@ -166,7 +175,7 @@ GAMELOOP:
 ; DELAY - Time delay.
 ;-----------------------------------------------------------------------------------------
 DELAY:
-    LD HL, 10000
+    LD HL, 20000
 DELAY_LOOP:
     DEC HL            ; HL = HL--
     LD A, H           ; A = H

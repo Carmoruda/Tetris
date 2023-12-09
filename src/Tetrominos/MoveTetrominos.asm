@@ -1,0 +1,22 @@
+MOVE_LEFT:
+    CALL ERASE_TETROMINO
+    LD A, (COLUMNS)
+    DEC A
+    LD (COLUMNS), A
+    LD (GAME_X_POS), A
+
+    JP END_MOVE
+
+MOVE_RIGHT:
+    CALL ERASE_TETROMINO
+    LD A, (COLUMNS)
+    INC A
+    LD (COLUMNS), A
+    LD (GAME_X_POS), A
+
+END_MOVE:
+    LD A, ' '
+    LD (PRESSED_KEY), A
+    LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
+    CALL PAINT_TETROMINO       ; Paint tetromino
+    JP TETROMINO_ACTIONS
