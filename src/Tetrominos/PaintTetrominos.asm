@@ -1,6 +1,6 @@
 ;-----------------------------------------------------------------------------------------
 ; PAINT_TETROMINOS - Paint a tetromino.
-;	  IN -  IX = Tetromino we want to paint.
+;	  IN -  TETROMINO_POINTER = Pointer to the tetromino we want to paint.
 ;           ROWS = Row of the screen in which we want to paint.
 ;           COLUMNS = Column of the screen in which we want to paint.
 ;     OUT - IX = Tetromino we want to paint.
@@ -9,6 +9,7 @@
 ;           E = Number of rows.
 ;-----------------------------------------------------------------------------------------
 PAINT_TETROMINO:
+    LD IX, (TETROMINO_POINTER)
     LD IY, IX       ; IY = Tetromino we want to paint
     LD E, (IX)      ; Number of rows
     INC IY: INC IY  ; IY = Pointer to the first square
