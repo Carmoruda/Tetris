@@ -21,16 +21,18 @@ ENDOFCODE:
 
 
 ; -------- VARIABLES -------
-PRESSED_KEY: DB " ", 0    ; Pressed key.
-ROWS: DB 0                ; Position of the tetromino in the rows.
-COLUMNS: DB 0             ; Position of the tetromino in the columns.
+PRESSED_KEY: DB " ", 0  ; Pressed key.
+ROWS: DB 0              ; Position of the tetromino in the rows.
+COLUMNS: DB 0           ; Position of the tetromino in the columns.
+DELAY_DOWN: DW 1000     ; Delay for the tetromino to move down.
+DELAY_MOVE: DW 3500     ; Delay for the tetromino to move left or right.
 
 ; -------- GAMESTATUS -------
 GAME_STATUS_STRUCT:
-GAME_X_POS: DB 0               ; X position of the current tetromino.
-GAME_Y_POS: DB 0               ; Y position of the current tetromino.
-TETROMINO_POINTER: DW 0        ; Pointer to the current tetromino.
-NEXT_TETROMINO_POINTER: DW 0   ; Pointer to the next tetromino.
+GAME_X_POS: DB 0                ; X position of the current tetromino.
+GAME_Y_POS: DB 0                ; Y position of the current tetromino.
+TETROMINO_POINTER: DW 0         ; Pointer to the current tetromino.
+NEXT_TETROMINO_POINTER: DW 0    ; Pointer to the next tetromino.
 
 ; -------- SCREENS --------
     INCLUDE "./Screens/StartScreen.asm"
