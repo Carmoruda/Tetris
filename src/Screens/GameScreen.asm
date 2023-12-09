@@ -48,32 +48,77 @@ HORIZONTAL_BORDER:
 
 
 ;-----------------------------------------------------------------------------------------
+; GENERATE_FIRST_TETROMINO - Save in TETROMINO_POINTER a pointer to the first tetromino.
+;                      OUT - TETROMINO_POINTER = Pointer to current tetromino in play.
+;-----------------------------------------------------------------------------------------
+GENERATE_FIRST_TETROMINO:
+    CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
+    LD (TETROMINO_POINTER), IX  ; Save pointer to TETROMINO_POINTER
+;-----------------------------------------------------------------------------------------
+
+
+;-----------------------------------------------------------------------------------------
 ; GAME_TETROMINO - Paints a random tetromino in the game screen (row 1, column 15).
+;             IN - TETROMINO_POINTER = Pointer to the tetromino we want to paint.
 ;-----------------------------------------------------------------------------------------
 GAME_TETROMINO:
-    CALL RANDOM_NUMBER ; Returns a random tetromino in the IX register.
-    LD (TETROMINO_POINTER), IX
+    LD A, 0             ; Screen row
+    LD (ROWS), A        ; Save row
+    LD (GAME_Y_POS), A  ; Save row to the GAME_STATUS_STRUCT
 
-    LD A, 0         ; Screen row
-    LD (ROWS), A    ; Save row
-
-    LD A, 15        ; Screen column
-    LD (COLUMNS), A ; Save column
+    LD A, 15           ; Screen column
+    LD (COLUMNS), A    ; Save column
+    LD (GAME_X_POS), A ; Save column to the GAME_STATUS_STRUCT
 
     LD A, (IX)           ; Tetromino height
     LD (PIECE_HEIGHT), A ; Save tetromino height
 
-    CALL PAINT_TETROMINO ; Paint tetromino
+    LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
+    CALL PAINT_TETROMINO       ; Paint tetromino
 ;-----------------------------------------------------------------------------------------
+
+
+;-----------------------------------------------------------------------------------------
+; GAME_TETROMINO - Save in NEXT_TETROMINO_POINTER a pointer to the next tetromino
+;                  and paint it in the game screen (row 7, column 28).
+;             IN - GAME_X_POS = Column where the current tetromino should be painted.
+;                  GAME_Y_POS = Row where the the current tetromino should be painted.
+;             OUT - NEXT_TETROMINO_POINTER = Pointer to the next tetromino.
+;                   ROWS = Current tetromino row position.
+;                   COLUMNS = Current tetromino column position.
+;-----------------------------------------------------------------------------------------
+GAME_NEXT_TETROMINO:
+    PUSH AF
+    CALL RANDOM_NUMBER ; Returns a random tetromino in the IX register
+    LD (NEXT_TETROMINO_POINTER), IX ; Save pointer to the tetromino
+
+    LD A, 7         ; Screen row for the next tetromino
+    LD (ROWS), A    ; Save row for the next tetromino
+
+    LD A, 28        ; Screen column for the next tetromino
+    LD (COLUMNS), A ; Save column for the next tetromino
+
+    CALL PAINT_TETROMINO ; Paint next tetromino
+
+    LD A, (GAME_Y_POS) ; A = Row where the current tetromino should be painted.
+    LD (ROWS), A       ; ROWS = Tetromino number of rows
+
+    LD A, (GAME_X_POS) ; A = Column where the current tetromino should be painted.
+    LD (COLUMNS), A    ; COLUMNS = Tetromino number of columns
+    POP AF
+;-----------------------------------------------------------------------------------------
+
 
 ;-----------------------------------------------------------------------------------------
 ; MOVE_TETROMINO_DOWN - Moves the tetromino down until it reaches the bottom border.
 ;-----------------------------------------------------------------------------------------
 MOVE_TETROMINO_DOWN:
-    CALL ERASE_TETROMINO ; Erase tetromino
-    LD A, (ROWS)         ; A = Rows
-    INC A                ; A = Rows + 1
-    LD (ROWS), A         ; Save Rows
+    LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
+    CALL ERASE_TETROMINO       ; Erase tetromino
+    LD A, (ROWS)               ; A = Rows
+    INC A                      ; A = Rows + 1
+    LD (ROWS), A               ; Save Rows
+    LD (GAME_Y_POS), A         ; Save row to the GAME_STATUS_STRUCT
 
     PUSH AF
     CALL PAINT_TETROMINO ; Paint tetromino
@@ -92,7 +137,20 @@ MOVE_TETROMINO_DOWN:
     LD A, (ROWS)         ; A = Rows
     INC A                ; A = Rows + 1
     LD (ROWS), A         ; Save Rows
+    LD (GAME_Y_POS), A
     CALL PAINT_TETROMINO ; Paint tetromino
+
+    LD IX, (NEXT_TETROMINO_POINTER) ; IX = Pointer to the tetromino
+
+    LD A, 7         ; Screen row
+    LD (ROWS), A    ; Save row
+
+    LD A, 28        ; Screen column
+    LD (COLUMNS), A ; Save column
+
+    CALL ERASE_TETROMINO
+
+    LD (TETROMINO_POINTER), IX      ; Save pointer to the tetromino
 ;-----------------------------------------------------------------------------------------
 
 
