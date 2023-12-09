@@ -52,8 +52,10 @@ HORIZONTAL_BORDER:
 ;-----------------------------------------------------------------------------------------
 GAME_TETROMINO:
     CALL RANDOM_NUMBER ; Returns a random tetromino in the IX register.
+    LD A, (IX)         ; A = Random tetromino
+    LD (TETROMINO_POINTER), A
 
-    LD A, 1         ; Screen row
+    LD A, 0         ; Screen row
     LD (ROWS), A    ; Save row
 
     LD A, 15        ; Screen column
@@ -64,7 +66,6 @@ GAME_TETROMINO:
 
     CALL PAINT_TETROMINO ; Paint tetromino
 ;-----------------------------------------------------------------------------------------
-
 
 ;-----------------------------------------------------------------------------------------
 ; MOVE_TETROMINO_DOWN - Moves the tetromino down until it reaches the bottom border.
