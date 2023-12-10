@@ -26,6 +26,8 @@ ROWS: DB 0              ; Position of the tetromino in the rows.
 COLUMNS: DB 0           ; Position of the tetromino in the columns.
 DELAY_DOWN: DW 1000     ; Delay for the tetromino to move down.
 DELAY_MOVE: DW 3500     ; Delay for the tetromino to move left or right.
+COLLISION: DB 0         ; Collision with other tetrominos.
+COLOUR: DB 0            ; Colour of a square of the screen.
 
 ; -------- GAMESTATUS -------
 GAME_STATUS_STRUCT:
@@ -44,6 +46,7 @@ NEXT_TETROMINO_POINTER: DW 0    ; Pointer to the next tetromino.
 ; -------- TETROMINOS --------
     INCLUDE "./Tetrominos/Tetrominos.asm"
     INCLUDE "./Tetrominos/PaintTetrominos.asm"
+    INCLUDE "./Tetrominos/CheckTetrominos.asm"
     INCLUDE "./Tetrominos/EraseTetrominos.asm"
     INCLUDE "./Tetrominos/RandomTetrominos.asm"
     INCLUDE "./Tetrominos/MoveTetrominos.asm"
@@ -53,7 +56,8 @@ NEXT_TETROMINO_POINTER: DW 0    ; Pointer to the next tetromino.
     INCLUDE "./Functions/ReadKey.asm"
     INCLUDE "./Functions/Printat.asm"
     INCLUDE "./Functions/Tetris_3D.asm"
-    INCLUDE "./Functions/AtributeCoordinate.asm"
+    INCLUDE "./Functions/PaintSquareScreen.asm"
+    INCLUDE "./Functions/CheckSquareScreen.asm"
 
 ; -------- TODOs --------
 ; TODO: Cursor must echo the key pressed (StarttingScreen and EndingScreen).
