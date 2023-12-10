@@ -101,45 +101,43 @@ GAME_NEXT_TETROMINO:
     CALL PAINT_TETROMINO ; Paint next tetromino
 
     LD A, (GAME_Y_POS) ; A = Row where the current tetromino should be painted.
-    LD (ROWS), A       ; ROWS = Tetromino number of rows
+    LD (ROWS), A       ; ROWS = Current tetromino row position
 
     LD A, (GAME_X_POS) ; A = Column where the current tetromino should be painted.
-    LD (COLUMNS), A    ; COLUMNS = Tetromino number of columns
+    LD (COLUMNS), A    ; COLUMNS = Current tetromino column position
     POP AF
 ;-----------------------------------------------------------------------------------------
 
 
 ;-----------------------------------------------------------------------------------------
-; MOVE_TETROMINO_DOWN - Moves the tetromino down until it reaches the bottom border.
+; TETRIS_ACTION - Controls tetrominos rotation and movement.
 ;-----------------------------------------------------------------------------------------
-MOVE_TETROMINO_DOWN:
-    LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
-    CALL ERASE_TETROMINO       ; Erase tetromino
-    LD A, (ROWS)               ; A = Rows
-    INC A                      ; A = Rows + 1
-    LD (ROWS), A               ; Save Rows
-    LD (GAME_Y_POS), A         ; Save row to the GAME_STATUS_STRUCT
+TETRIS_ACTION:
+    LD HL, (DELAY_MOVE)     ; HL = DELAY_MOVE = 3500
+    LD (ACTIVE_DELAY), HL   ; ACTIVE_DELAY = HL = 3500
+    CALL DELAY              ; Time delay
 
-    PUSH AF
-    CALL PAINT_TETROMINO ; Paint tetromino
-    CALL DELAY           ; Time delay
-    LD A, (PIECE_HEIGHT) ; A = Tetromino height
-    LD B, A              ; B = Tetromino height
-    LD A, 21             ; A = 21
-    SUB B                ; A = 21 - Tetromino height
-    LD B, A              ; B = 21 - Tetromino height
-    POP AF
+    LD A, (PRESSED_KEY)          ; A = PRESSED_KEY
+    CP 'Z'                       ; If PRESSED_KEY == 'Z'
+    JP Z, MOVE_TETROMINO_LEFT    ; Move tetromino to the left
+    CP 'C'                       ; If PRESSED_KEY == 'C'
+    JP Z, MOVE_TETROMINO_RIGHT   ; Move tetromino to the right
+    CP 'J'                       ; If PRESSED_KEY == 'J'
+    JP Z, ROTATE_TETROMINO_LEFT  ; Rotate tetromino to the left
+    CP 'L'                       ; If PRESSED_KEY == 'L'
+    JP Z, ROTATE_TETROMINO_RIGHT ; Rotate tetromino to the right
 
-    CP B
-    JR NZ, MOVE_TETROMINO_DOWN ; If A != B, repeat
+    CALL MOVE_TETROMINO_DOWN     ; Move tetromino down
+;-----------------------------------------------------------------------------------------
 
-    CALL ERASE_TETROMINO ; Erase tetromino
-    LD A, (ROWS)         ; A = Rows
-    INC A                ; A = Rows + 1
-    LD (ROWS), A         ; Save Rows
-    LD (GAME_Y_POS), A
-    CALL PAINT_TETROMINO ; Paint tetromino
 
+;-----------------------------------------------------------------------------------------
+; NEXT_TETROMINO - Erases the current next tetromino and changes the TETROMINO_POINTER
+;                  to point to the next tetromino.
+;             IN - NEXT_TETROMINO_POINTER = Pointer to the next tetromino.
+;             OUT - TETROMINO_POINTER = Pointer to the new currecnt tetromino.
+;-----------------------------------------------------------------------------------------
+NEXT_TETROMINO:
     LD IX, (NEXT_TETROMINO_POINTER) ; IX = Pointer to the tetromino
 
     LD A, 7         ; Screen row
@@ -148,9 +146,19 @@ MOVE_TETROMINO_DOWN:
     LD A, 28        ; Screen column
     LD (COLUMNS), A ; Save column
 
-    CALL ERASE_TETROMINO
+    CALL ERASE_TETROMINO       ; Erase tetromino
+    LD (TETROMINO_POINTER), IX ; Save pointer to the tetromino
+    JP GAME_TETROMINO
+;-----------------------------------------------------------------------------------------
 
-    LD (TETROMINO_POINTER), IX      ; Save pointer to the tetromino
+
+;-----------------------------------------------------------------------------------------
+; COLLISION_ACTION - When a collision is detected, the tetromino is painted in its
+;                    previous position and the next tetromino is generated.
+;-----------------------------------------------------------------------------------------
+COLLISION_ACTION:
+    CALL PAINT_TETROMINO
+    CALL NEXT_TETROMINO
 ;-----------------------------------------------------------------------------------------
 
 
@@ -166,19 +174,12 @@ GAMELOOP:
 ; DELAY - Time delay.
 ;-----------------------------------------------------------------------------------------
 DELAY:
-    LD HL, 10000
+    LD HL, (ACTIVE_DELAY)
 DELAY_LOOP:
-    DEC HL            ; HL = HL--
-    LD A, H           ; A = H
+    CALL READ_ACTION_KEYS   ; Check if a key has been pressed
+    DEC HL                  ; HL = HL--
+    LD A, H                 ; A = H
     OR 0
-    JR NZ, DELAY_LOOP ; If HL != 0, repeat
+    JR NZ, DELAY_LOOP       ; If HL != 0, repeat
     RET
 ;-----------------------------------------------------------------------------------------
-
-
-; -------- VARIABLES -------
-TETRIS_WIDTH EQU 19     ; Space between the U borders.
-TETRIS_MAX_WIDTH EQU 25 ; Last column of the U borders.
-TETRIS_HEIGHT EQU 21   ; Last row of the U borders.
-PIECE_HEIGHT: DB 0     ; Tetromino height.
-GAMEMESSAGE: DB "GAME", 0

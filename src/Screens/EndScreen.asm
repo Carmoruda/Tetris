@@ -33,16 +33,10 @@ ENDINGSCREEN:
         LD A, $3B              ; Attribute - Pink font with white background
         LD B, 8                ; Row
         LD C, 11               ; Column
-        LD IX, ENDMESSAGE      ; End!
+        LD IX, ENDMESSAGE       ; End!
         CALL PRINTAT
         LD HL, $5800 + 6 * 32 + 17    ; Row 10, column 23
         LD (HL), $38                  ; Attribute - White background.
 
         JP ENDOFCODE
 ;-----------------------------------------------------------------------------------------
-
-
-; -------- SCREEN TEXT -------
-BYEMESSAGE: DB "BYE!", 0
-PLAYAGAINMESSAGE: DB "PLAY AGAIN? (Y/N)", 0
-ENDMESSAGE: DB "END!", 0

@@ -1,5 +1,5 @@
 ;-----------------------------------------------------------------------------------------
-; DOTYXC - Identifies whether the user presses the Y key.
+; DOTYXC - Paint a square on the screen.
 ;	  IN - B = Y coordinate.
 ;          C = X coordinate.
 ;          A = Color (hex).

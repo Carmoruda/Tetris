@@ -1,6 +1,6 @@
 ;-----------------------------------------------------------------------------------------
-; PAINT_TETROMINOS - Paint a tetromino.
-;	  IN -  IX = Tetromino we want to paint.
+; CHECK_TETROMINO - Check a position to see if a tetromino can be painted there.
+;	  IN -  IX = Tetromino we want to check.
 ;           ROWS = Row of the screen in which we want to paint.
 ;           COLUMNS = Column of the screen in which we want to paint.
 ;     OUT - IX = Tetromino we want to paint.
@@ -8,7 +8,7 @@
 ;           B = Row of the screen in which we want to paint.
 ;           E = Number of rows.
 ;-----------------------------------------------------------------------------------------
-PAINT_TETROMINO:
+CHECK_TETROMINO:
     PUSH AF
     PUSH BC
     LD IY, IX       ; IY = Tetromino we want to paint
@@ -16,6 +16,7 @@ PAINT_TETROMINO:
     INC IY: INC IY  ; IY = Pointer to the first square
     LD A, (ROWS)    ; A = Row of the screen in which we want to paint
     LD B, A         ; B = Row of the screen in which we want to paint
+    INC B
 ;-----------------------------------------------------------------------------------------
 
 
@@ -32,10 +33,10 @@ PAINT_TETROMINO:
 ;           D = Number of columns.
 ;           E = Number of rows.
 ;-----------------------------------------------------------------------------------------
-PAINT_TETROMINO_OUTERLOOP:
+CHECK_TETROMINO_OUTERLOOP:
     LD D, (IX + 1)  ; Number of columns
-    LD A, (COLUMNS) ; A = Column of the screen in which we want to paint
-    LD C, A         ; C = Column of the screen in which we want to paint
+    LD A, (COLUMNS) ; A = Column of the screen in which we want to check if we can paint
+    LD C, A         ; C = Column of the screen in which we want to check if we can paint
 ;-----------------------------------------------------------------------------------------
 
 
@@ -55,13 +56,13 @@ PAINT_TETROMINO_OUTERLOOP:
 ;           D = Number of columns.
 ;           E = Number of rows.
 ;-----------------------------------------------------------------------------------------
-PAINT_TETROMINO_INNERLOOP:
+CHECK_TETROMINO_INNERLOOP:
     LD A, (IY)                     ; A = Square
     INC IY                         ; IY = Next square
     CP 0                           ; Square = 0?
-    JP NZ, PAINT_TETROMINO_LOOP    ; If square != 0 (has a colour), paint it.
+    JP NZ, CHECK_TETROMINO_LOOP    ; If square != 0 (has a colour), paint it.
     INC C                          ; Next column
-    JP PAINT_TETROMINO_CHECK_LOOPS ; Check loop conditions
+    JP CHECK_TETROMINO_CHECK_LOOPS ; Check loop conditions
 ;-----------------------------------------------------------------------------------------
 
 
@@ -82,11 +83,14 @@ PAINT_TETROMINO_INNERLOOP:
 ;           D = Number of columns.
 ;           E = Number of rows.
 ;-----------------------------------------------------------------------------------------
-PAINT_TETROMINO_LOOP:
+CHECK_TETROMINO_LOOP:
     PUSH DE
-    CALL DOTYXC         ; Paint square
+    CALL CHECK_DOTYXC           ; Check if we can paint the square
     POP DE
-    INC C               ; Next column
+    LD A, (COLLISION)           ; A = Collision result
+    CP 1                        ; Collision?
+    JP Z, COLLISION_DETECTED    ; Yes - Collision detected
+    INC C                       ; Next column
 ;-----------------------------------------------------------------------------------------
 
 
@@ -105,16 +109,61 @@ PAINT_TETROMINO_LOOP:
 ;         D = Number of columns.
 ;         E = Number of rows.
 ;-----------------------------------------------------------------------------------------
-PAINT_TETROMINO_CHECK_LOOPS:
+CHECK_TETROMINO_CHECK_LOOPS:
     LD A, D                             ; A = D
     CP 0                                ; Column = 0?
-    DEC D                               ; Column = Column--
-    JP NZ, PAINT_TETROMINO_INNERLOOP    ; Yes - Paint
+    DEC D                               ; Column--
+    JP NZ, CHECK_TETROMINO_INNERLOOP    ; Yes - Paint
     INC B                               ; Next row
     LD A, E                             ; A = E
     CP 0                                ; Row = 0?
-    DEC E                               ; Row = Row--
-    JP NZ, PAINT_TETROMINO_OUTERLOOP    ; No - Loop
+    DEC E                               ; Row--
+    JP NZ, CHECK_TETROMINO_OUTERLOOP    ; No - Loop
+    JP NO_COLLISION_DETECTED            ; If row = 0, then no collision detected
+;-----------------------------------------------------------------------------------------
+
+
+;-----------------------------------------------------------------------------------------
+; COLLISION_DETECTED - Adjust variables to the last position before the collision.
+;     OUT - COLLISION = 1
+;           ROWS = Row of the screen in which we must paint.
+;           COLUMNS = Column of the screen in which we must paint.
+;           GAME_Y_POS = Row of the screen in which we must paint (game struct).
+;           GAME_X_POS = Column of the screen in which we must paint (game struct).
+;-----------------------------------------------------------------------------------------
+COLLISION_DETECTED:
+    LD A, 1                     ; A = 1 - Collision detected
+    LD (COLLISION), A           ; COLLISION = 1
+    LD A, (GAME_Y_POS)          ; A = GAME_Y_POS = Previous row
+    LD (ROWS), A                ; ROWS = A = Previous row
+    LD A, (GAME_X_POS)          ; A = GAME_X_POS = Previous column
+    LD (COLUMNS), A             ; COLUMNS = A = Previous column
+    CALL PAINT_TETROMINO        ; Paint the tetromino in the previous position
+    JP END_CHECK_TETROMINO      ; End of the CHECK_TETROMINO routine
+;-----------------------------------------------------------------------------------------
+
+
+;-----------------------------------------------------------------------------------------
+; NO_COLLISION_DETECTED - Adjust variables to the new position.
+;     OUT - COLLISION = 0
+;           ROWS = Row of the screen in which we must paint.
+;           COLUMNS = Column of the screen in which we must paint.
+;           GAME_Y_POS = Row of the screen in which we must paint (game struct).
+;           GAME_X_POS = Column of the screen in which we must paint (game struct).
+;-----------------------------------------------------------------------------------------
+NO_COLLISION_DETECTED:
+    LD A, 0            ; A = 0 - No collision detected
+    LD A, (ROWS)       ; A = ROWS = Row of the screen in which we must paint
+    LD (GAME_Y_POS), A ; GAME_Y_POS = A = Row of the screen in which we must paint
+    LD A, (COLUMNS)    ; A = COLUMNS = Column of the screen in which we must paint
+    LD (GAME_X_POS), A ; GAME_X_POS = A = Column of the screen in which we must paint
+;-----------------------------------------------------------------------------------------
+
+
+;-----------------------------------------------------------------------------------------
+; END_CHECK_TETROMINO - End of the CHECK_TETROMINO routine.
+;-----------------------------------------------------------------------------------------
+END_CHECK_TETROMINO:
     POP BC
     POP AF
     RET
