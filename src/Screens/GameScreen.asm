@@ -129,13 +129,7 @@ TETRIS_ACTION:
 
     CALL MOVE_TETROMINO_DOWN ; Move tetromino down
 
-    CALL ERASE_TETROMINO ; Erase tetromino
-    LD A, (ROWS)         ; A = Rows
-    INC A                ; A = Rows + 1
-    LD (ROWS), A         ; Save Rows
-    LD (GAME_Y_POS), A   ; Save Rows to the GAME_STATUS_STRUCT
-    CALL PAINT_TETROMINO ; Paint tetromino
-
+NEXT_TETROMINO:
     LD IX, (NEXT_TETROMINO_POINTER) ; IX = Pointer to the tetromino
 
     LD A, 7         ; Screen row
@@ -172,6 +166,9 @@ DELAY_LOOP:
     RET
 ;-----------------------------------------------------------------------------------------
 
+COLLISION_ACTION:
+    CALL PAINT_TETROMINO
+    CALL NEXT_TETROMINO
 
 ; -------- VARIABLES -------
 TETRIS_WIDTH EQU 19     ; Space between the U borders.

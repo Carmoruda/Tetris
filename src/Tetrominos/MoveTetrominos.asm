@@ -30,6 +30,12 @@ MOVE_TETROMINO_RIGHT:
 MOVE_TETROMINO_DOWN:
     LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
     CALL ERASE_TETROMINO       ; Erase tetromino
+    CALL CHECK_TETROMINO
+
+    LD A, (COLLISION)
+    CP 0
+    JP NZ, COLLISION_ACTION
+
     LD A, (ROWS)               ; A = Rows
     INC A                      ; A = Rows + 1
     LD (ROWS), A               ; Save Rows
@@ -42,7 +48,7 @@ MOVE_TETROMINO_DOWN:
     CALL DELAY            ; Time delay
     LD A, (PIECE_HEIGHT)  ; A = Tetromino height
     LD B, A               ; B = Tetromino height
-    LD A, 21              ; A = 21
+    LD A, 22              ; A = 21
     SUB B                 ; A = 21 - Tetromino height
     LD B, A               ; B = 21 - Tetromino height
     POP AF
