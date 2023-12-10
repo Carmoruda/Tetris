@@ -85,12 +85,12 @@ CHECK_TETROMINO_INNERLOOP:
 ;-----------------------------------------------------------------------------------------
 CHECK_TETROMINO_LOOP:
     PUSH DE
-    CALL CHECK_DOTYXC           ; Check if we can paint the square
+    CALL CHECK_DOTYXC               ; Check if we can paint the square
     POP DE
-    LD A, (COLLISION)           ; A = Collision result
-    CP 1                        ; Collision?
-    JP Z, COLLISION_DETECTED    ; Yes - Collision detected
-    INC C                       ; Next column
+    LD A, (COLLISION)               ; A = Collision result
+    CP 0                            ; Collision?
+    JP NZ, COLLISION_DETECTED       ; Yes - Collision detected
+    INC C                           ; Next column
 ;-----------------------------------------------------------------------------------------
 
 
