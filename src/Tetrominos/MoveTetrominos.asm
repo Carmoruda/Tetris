@@ -30,11 +30,11 @@ MOVE_TETROMINO_RIGHT:
 MOVE_TETROMINO_DOWN:
     LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
     CALL ERASE_TETROMINO       ; Erase tetromino
-    CALL CHECK_TETROMINO
+    CALL CHECK_TETROMINO       ; Check tetromino next position
 
-    LD A, (COLLISION)
+    LD A, (COLLISION)          ; A = COLLISION
     CP 0
-    JP NZ, COLLISION_ACTION
+    JP NZ, COLLISION_ACTION    ; If A != 0 (No collision), jump to COLLISION_ACTION
 
     LD A, (ROWS)               ; A = Rows
     INC A                      ; A = Rows + 1

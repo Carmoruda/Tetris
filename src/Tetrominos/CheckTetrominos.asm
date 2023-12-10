@@ -35,8 +35,8 @@ CHECK_TETROMINO:
 ;-----------------------------------------------------------------------------------------
 CHECK_TETROMINO_OUTERLOOP:
     LD D, (IX + 1)  ; Number of columns
-    LD A, (COLUMNS)
-    LD C, A
+    LD A, (COLUMNS) ; A = Column of the screen in which we want to check if we can paint
+    LD C, A         ; C = Column of the screen in which we want to check if we can paint
 ;-----------------------------------------------------------------------------------------
 
 
@@ -85,12 +85,12 @@ CHECK_TETROMINO_INNERLOOP:
 ;-----------------------------------------------------------------------------------------
 CHECK_TETROMINO_LOOP:
     PUSH DE
-    CALL CHECK_DOTYXC
+    CALL CHECK_DOTYXC           ; Check if we can paint the square
     POP DE
-    LD A, (COLLISION)
-    CP 0
-    JP NZ, COLLISION_DETECTED
-    INC C               ; Next column
+    LD A, (COLLISION)           ; A = Collision result
+    CP 1                        ; Collision?
+    JP Z, COLLISION_DETECTED    ; Yes - Collision detected
+    INC C                       ; Next column
 ;-----------------------------------------------------------------------------------------
 
 
@@ -119,25 +119,50 @@ CHECK_TETROMINO_CHECK_LOOPS:
     CP 0                                ; Row = 0?
     DEC E                               ; Row--
     JP NZ, CHECK_TETROMINO_OUTERLOOP    ; No - Loop
-    JP NO_COLLISION_DETECTED
+    JP NO_COLLISION_DETECTED            ; If row = 0, then no collision detected
+;-----------------------------------------------------------------------------------------
 
+
+;-----------------------------------------------------------------------------------------
+; COLLISION_DETECTED - Adjust variables to the last position before the collision.
+;     OUT - COLLISION = 1
+;           ROWS = Row of the screen in which we must paint.
+;           COLUMNS = Column of the screen in which we must paint.
+;           GAME_Y_POS = Row of the screen in which we must paint (game struct).
+;           GAME_X_POS = Column of the screen in which we must paint (game struct).
+;-----------------------------------------------------------------------------------------
 COLLISION_DETECTED:
-    LD A, 1
-    LD (COLLISION), A
-    LD A, (GAME_Y_POS)
-    LD (ROWS), A
-    LD A, (GAME_X_POS)
-    LD (COLUMNS), A
-    CALL PAINT_TETROMINO
-    JP END_CHECK_TETROMINO
+    LD A, 1                     ; A = 1 - Collision detected
+    LD (COLLISION), A           ; COLLISION = 1
+    LD A, (GAME_Y_POS)          ; A = GAME_Y_POS = Previous row
+    LD (ROWS), A                ; ROWS = A = Previous row
+    LD A, (GAME_X_POS)          ; A = GAME_X_POS = Previous column
+    LD (COLUMNS), A             ; COLUMNS = A = Previous column
+    CALL PAINT_TETROMINO        ; Paint the tetromino in the previous position
+    JP END_CHECK_TETROMINO      ; End of the CHECK_TETROMINO routine
+;-----------------------------------------------------------------------------------------
 
+
+;-----------------------------------------------------------------------------------------
+; NO_COLLISION_DETECTED - Adjust variables to the new position.
+;     OUT - COLLISION = 0
+;           ROWS = Row of the screen in which we must paint.
+;           COLUMNS = Column of the screen in which we must paint.
+;           GAME_Y_POS = Row of the screen in which we must paint (game struct).
+;           GAME_X_POS = Column of the screen in which we must paint (game struct).
+;-----------------------------------------------------------------------------------------
 NO_COLLISION_DETECTED:
-    LD A, 0
-    LD A, (ROWS)
-    LD (GAME_Y_POS), A
-    LD A, (COLUMNS)
-    LD (GAME_X_POS), A
+    LD A, 0            ; A = 0 - No collision detected
+    LD A, (ROWS)       ; A = ROWS = Row of the screen in which we must paint
+    LD (GAME_Y_POS), A ; GAME_Y_POS = A = Row of the screen in which we must paint
+    LD A, (COLUMNS)    ; A = COLUMNS = Column of the screen in which we must paint
+    LD (GAME_X_POS), A ; GAME_X_POS = A = Column of the screen in which we must paint
+;-----------------------------------------------------------------------------------------
 
+
+;-----------------------------------------------------------------------------------------
+; END_CHECK_TETROMINO - End of the CHECK_TETROMINO routine.
+;-----------------------------------------------------------------------------------------
 END_CHECK_TETROMINO:
     POP BC
     POP AF

@@ -35,9 +35,3 @@ STARTINGSCREEN:
         JP NZ, ENDINGSCREEN ; Y - Game
         RET                 ; N - End
 ;-----------------------------------------------------------------------------------------
-
-
-; -------- SCREEN TEXT -------
-PLAYMESSAGE1: DB "WOULD YOU ", 0
-PLAYMESSAGE2: DB "LIKE TO PLAY?", 0
-PLAYMESSAGE3: DB " (Y/N)", 0

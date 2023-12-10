@@ -34,8 +34,8 @@ PAINT_TETROMINO:
 ;-----------------------------------------------------------------------------------------
 PAINT_TETROMINO_OUTERLOOP:
     LD D, (IX + 1)  ; Number of columns
-    LD A, (COLUMNS)
-    LD C, A
+    LD A, (COLUMNS) ; A = Column of the screen in which we want to paint
+    LD C, A         ; C = Column of the screen in which we want to paint
 ;-----------------------------------------------------------------------------------------
 
 
@@ -108,12 +108,12 @@ PAINT_TETROMINO_LOOP:
 PAINT_TETROMINO_CHECK_LOOPS:
     LD A, D                             ; A = D
     CP 0                                ; Column = 0?
-    DEC D                               ; Column--
+    DEC D                               ; Column = Column--
     JP NZ, PAINT_TETROMINO_INNERLOOP    ; Yes - Paint
     INC B                               ; Next row
     LD A, E                             ; A = E
     CP 0                                ; Row = 0?
-    DEC E                               ; Row--
+    DEC E                               ; Row = Row--
     JP NZ, PAINT_TETROMINO_OUTERLOOP    ; No - Loop
     POP BC
     POP AF
