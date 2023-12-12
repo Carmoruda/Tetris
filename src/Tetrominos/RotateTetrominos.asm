@@ -22,9 +22,9 @@ ROTATE_TETROMINO_LEFT:
 ; ROTATE_TETROMINO_RIGHT - Rotates the tetromino to the right.
 ;-----------------------------------------------------------------------------------------
 ROTATE_TETROMINO_RIGHT:
-    CALL ROTATE_INI ; Initialize rotation routine
-    LD HL, (IX + 9) ; HL = Tetromino rotation to the right
-    CALL ROTATE_END ; End rotation routine
+    CALL ROTATE_INI  ; Initialize rotation routine
+    LD HL, (IX + 10) ; HL = Tetromino rotation to the right
+    CALL ROTATE_END  ; End rotation routine
 ;-----------------------------------------------------------------------------------------
 
 
