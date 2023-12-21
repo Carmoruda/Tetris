@@ -83,11 +83,12 @@ LOADSTARTINGSCREEN_START: INCBIN "./GraphicScreens/StartingScreenTetris.scr"
     INCLUDE "./Functions/CheckSquareScreen.asm"
 
 ; -------- TODOs --------
-; TODO: Cursor must echo the key pressed (StarttingScreen and EndingScreen).
+; TODO: Cursor must echo the key pressed (StartingScreen and EndingScreen).
 ; TODO: Speeded-up delay.
 ; TODO: Lower threshold delay.
-; TODO: Rotate tetromino (right and left).
 ; TODO: Press enter to drop tetromino faster.
 ; TODO: No blocking of movement through continuous key pressing.
 ; TODO: Press key just produces one tetromino movement.
 ; TODO: Detect collision with the borders of the screen.
+; TODO: End condition.
+; FIXME: When the tetromino is in the first row and you move to the sides, it does not erase the previous position correctly.

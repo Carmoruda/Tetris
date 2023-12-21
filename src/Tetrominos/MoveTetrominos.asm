@@ -3,9 +3,17 @@
 ;-----------------------------------------------------------------------------------------
 MOVE_TETROMINO_LEFT:
     CALL ERASE_TETROMINO    ; Erase current tetromino
+
     LD A, (COLUMNS)         ; A = X position
-    DEC A                   ; A = X position - 1
+    DEC A                   ; A = X position - 1 (Move left)
     LD (COLUMNS), A         ; Save X position
+
+    CALL CHECK_TETROMINO    ; Check tetromino next position
+
+    LD A, (COLLISION)       ; A = COLLISION
+    CP 0
+    JP NZ, END_MOVE         ; If A != 0 (Collision), jump to END_MOVE (Move down)
+
     LD (GAME_X_POS), A      ; Save X position to the GAME_STATUS_STRUCT
     JP END_MOVE             ; Jump to END_MOVE
 ;-----------------------------------------------------------------------------------------
@@ -16,9 +24,17 @@ MOVE_TETROMINO_LEFT:
 ;-----------------------------------------------------------------------------------------
 MOVE_TETROMINO_RIGHT:
     CALL ERASE_TETROMINO   ; Erase current tetromino
+
     LD A, (COLUMNS)        ; A = X position
-    INC A                  ; A = X position + 1
+    INC A                  ; A = X position + 1 (Move right)
     LD (COLUMNS), A        ; Save X position
+
+    CALL CHECK_TETROMINO   ; Check tetromino next position
+
+    LD A, (COLLISION)      ; A = COLLISION
+    CP 0
+    JP NZ, END_MOVE        ; If A != 0 (Collision), jump to END_MOVE (Move down)
+
     LD (GAME_X_POS), A     ; Save X position to the GAME_STATUS_STRUCT
     JP END_MOVE            ; Jump to END_MOVE
 ;-----------------------------------------------------------------------------------------

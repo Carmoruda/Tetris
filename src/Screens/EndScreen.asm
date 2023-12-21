@@ -27,7 +27,7 @@ ENDINGSCREEN:
         CALL READYKEY        ; Wait for a key to be pressed
         LD A, (PRESSED_KEY)  ; A = Key pressed
         CP 'Y'
-        JP Z, STARTINGSCREEN    ; If Y, go to starting screen
+        JP Z, BEGIN    ; If Y, go to starting screen
 
         ; End!
         LD A, $3B              ; Attribute - Pink font with white background

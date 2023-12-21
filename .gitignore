@@ -5,9 +5,9 @@
 .vscode
 
 # Tetris files
-Tetris.bin
-Tetris.lst
-Tetris.sld
+*.bin
+*.lst
+*.sld
 
 # Tetris 1 file
 Tetris1File
