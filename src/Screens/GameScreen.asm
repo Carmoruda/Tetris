@@ -111,6 +111,29 @@ GAME_NEXT_TETROMINO:
     POP AF
 ;-----------------------------------------------------------------------------------------
 
+;-----------------------------------------------------------------------------------------
+; MODIFY_DELAY_TIME - Modify the delay time until the threshold is reached.
+;-----------------------------------------------------------------------------------------
+MODIFY_DELAY_TIME:
+    LD A, (DELAY_DOWN_MIN)  ; A = DELAY_DOWN_MIN = 50
+    LD B, A                 ; B = DELAY_DOWN_MIN = 50
+
+    LD A, (DELAY_DOWN)      ; A = DELAY_DOWN = 1000
+    CP B                    ; If DELAY_DOWN == DELAY_DOWN_MIN
+    JP Z, TETRIS_ACTION     ; Go to TETRIS_ACTION
+    SUB 100                 ; Else DELAY_DOWN = DELAY_DOWN - 50
+    LD (DELAY_DOWN), A      ; Save DELAY_DOWN
+
+    LD A, (DELAY_MOVE_MIN)  ; A = DELAY_MOVE_MIN = 100
+    LD B, A                 ; B = DELAY_MOVE_MIN = 100
+
+    LD A, (DELAY_MOVE)      ; A = DELAY_MOVE = 3500
+    CP B                    ; If DELAY_MOVE == DELAY_MOVE_MIN
+    JP Z, TETRIS_ACTION     ; Go to TETRIS_ACTION
+    SUB 100                 ; Else DELAY_MOVE = DELAY_MOVE - 100
+    LD (DELAY_MOVE), A      ; Save DELAY_MOVE
+;-----------------------------------------------------------------------------------------
+
 
 ;-----------------------------------------------------------------------------------------
 ; TETRIS_ACTION - Controls tetrominos rotation and movement.

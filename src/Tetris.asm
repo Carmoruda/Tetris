@@ -26,7 +26,9 @@ PRESSED_KEY: DB " ", 0  ; Pressed key.
 ROWS: DB 0              ; Position of the tetromino in the rows.
 COLUMNS: DB 0           ; Position of the tetromino in the columns.
 DELAY_DOWN: DW 1000     ; Delay for the tetromino to move down.
+DELAY_DOWN_MIN: DW 50   ; Minimum delay for the tetromino to move down (threshold).
 DELAY_MOVE: DW 3500     ; Delay for the tetromino to move left or right.
+DELAY_MOVE_MIN: DW 100  ; Minimum delay for the tetromino to move left or right (threshold).
 ACTIVE_DELAY: DW 0      ; Time delay that is currently active.
 COLLISION: DB 0         ; Collision with other tetrominos.
 TETRIS_WIDTH EQU 19     ; Space between the U borders.
@@ -84,10 +86,8 @@ LOADSTARTINGSCREEN_START: INCBIN "./GraphicScreens/StartingScreenTetris.scr"
 
 ; -------- TODOs --------
 ; TODO: Cursor must echo the key pressed (StartingScreen and EndingScreen).
-; TODO: Speeded-up delay.
-; TODO: Lower threshold delay.
 ; TODO: Press enter to drop tetromino faster.
 ; TODO: No blocking of movement through continuous key pressing.
 ; TODO: Press key just produces one tetromino movement.
-; TODO: Detect collision with the borders of the screen.
 ; TODO: End condition.
+; TODO: Tetromino rotation isnt natural.
