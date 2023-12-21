@@ -52,8 +52,7 @@ HORIZONTAL_BORDER:
 ;                      OUT - TETROMINO_POINTER = Pointer to current tetromino in play.
 ;-----------------------------------------------------------------------------------------
 GENERATE_FIRST_TETROMINO:
-    ;CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
-    LD IX, T_S1
+    CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
     LD (TETROMINO_POINTER), IX  ; Save pointer to TETROMINO_POINTER
 ;-----------------------------------------------------------------------------------------
 
@@ -81,7 +80,7 @@ GAME_TETROMINO:
 
 
 ;-----------------------------------------------------------------------------------------
-; GAME_TETROMINO - Save in NEXT_TETROMINO_POINTER a pointer to the next tetromino
+; GAME_NEXT_TETROMINO - Save in NEXT_TETROMINO_POINTER a pointer to the next tetromino
 ;                  and paint it in the game screen (row 7, column 28).
 ;             IN - GAME_X_POS = Column where the current tetromino should be painted.
 ;                  GAME_Y_POS = Row where the the current tetromino should be painted.
