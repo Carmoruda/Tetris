@@ -74,6 +74,33 @@ MOVE_TETROMINO_DOWN:
     RET
 ;-----------------------------------------------------------------------------------------
 
+MOVE_TETROMINO_FAST:
+    LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
+    CALL ERASE_TETROMINO       ; Erase tetromino
+    CALL CHECK_TETROMINO       ; Check tetromino next position
+
+    LD A, (COLLISION)          ; A = COLLISION
+    CP 0
+    JP NZ, COLLISION_ACTION    ; If A != 0 (Collision), jump to COLLISION_ACTION
+
+    LD A, (ROWS)               ; A = Rows
+    INC A                      ; A = Rows + 1
+    LD (ROWS), A               ; Save Rows
+    LD (GAME_Y_POS), A         ; Save row to the GAME_STATUS_STRUCT
+
+    PUSH AF
+    CALL PAINT_TETROMINO  ; Paint tetromino
+    LD A, (PIECE_HEIGHT)  ; A = Tetromino height
+    LD B, A               ; B = Tetromino height
+    LD A, 22              ; A = 21
+    SUB B                 ; A = 21 - Tetromino height
+    LD B, A               ; B = 21 - Tetromino height
+    POP AF
+
+    CP B
+    JP NZ, MOVE_TETROMINO_FAST ; If A != B, repeat
+    RET
+
 
 ;-----------------------------------------------------------------------------------------
 ; END_MOVE - Ends the movement of the tetromino when a key is pressed.

@@ -4,7 +4,6 @@
 
 
 BEGIN:
-
     DI              ; Disable interruptions.
     LD SP, 0        ; Set the stack pointer to the top of memory.
     LD HL, $5800    ; First square of the screen.
@@ -89,5 +88,4 @@ LOADSTARTINGSCREEN_START: INCBIN "./GraphicScreens/StartingScreenTetris.scr"
 ; TODO: Press enter to drop tetromino faster.
 ; TODO: No blocking of movement through continuous key pressing.
 ; TODO: Press key just produces one tetromino movement.
-; TODO: End condition.
 ; TODO: Tetromino rotation isnt natural.

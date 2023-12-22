@@ -52,7 +52,8 @@ HORIZONTAL_BORDER:
 ;                      OUT - TETROMINO_POINTER = Pointer to current tetromino in play.
 ;-----------------------------------------------------------------------------------------
 GENERATE_FIRST_TETROMINO:
-    CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
+    ;CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
+    LD IX, T_S1
     LD (TETROMINO_POINTER), IX  ; Save pointer to TETROMINO_POINTER
 ;-----------------------------------------------------------------------------------------
 
@@ -75,6 +76,11 @@ GAME_TETROMINO:
 
     LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
     CALL CHECK_TETROMINO       ; Check if the tetromino can be painted
+
+    LD A, (COLLISION)          ; A = COLLISION
+    CP 0
+    JP NZ, COLLISION_ACTION_END    ; If A != 0 (No collision), jump to COLLISION_ACTION
+
     CALL PAINT_TETROMINO       ; Paint tetromino
 ;-----------------------------------------------------------------------------------------
 
@@ -152,7 +158,11 @@ TETRIS_ACTION:
     JP Z, ROTATE_TETROMINO_LEFT  ; Rotate tetromino to the left
     CP 'L'                       ; If PRESSED_KEY == 'L'
     JP Z, ROTATE_TETROMINO_RIGHT ; Rotate tetromino to the right
+    ;CP 'E'
+    ;JP Z, MOVE_TETROMINO_FAST
 
+    LD A, 0
+    LD (PRESSED_KEY), A          ; PRESSED_KEY = 0
     CALL MOVE_TETROMINO_DOWN     ; Move tetromino down
 ;-----------------------------------------------------------------------------------------
 
@@ -187,6 +197,8 @@ COLLISION_ACTION:
     CALL NEXT_TETROMINO
 ;-----------------------------------------------------------------------------------------
 
+COLLISION_ACTION_END:
+    CALL ENDINGSCREEN
 
 ;-----------------------------------------------------------------------------------------
 ; GAMELOOP - Game simulation.

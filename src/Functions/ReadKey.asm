@@ -71,10 +71,22 @@ J_KEY:
 ;-----------------------------------------------------------------------------------------
 L_KEY:
 	BIT 1, A 				; Key L
-	JR NZ, C_KEY			; L isn't pressed, check C key
+	JR NZ, ENTER_KEY		; L isn't pressed, check ENTER key
 	LD A, 'L'				; L pressed, A = 'L'
 	LD (PRESSED_KEY), A		; Save the pressed key
 	JP WAIT_FOR_KEY_RELEASE	; Wait for key release
+;-----------------------------------------------------------------------------------------
+
+
+;-----------------------------------------------------------------------------------------
+; ENTER_KEY - Identifies whether the user presses the ENTER key.
+;-----------------------------------------------------------------------------------------
+ENTER_KEY:
+	BIT 0, A				; Key ENTER
+	JR NZ, C_KEY		    ; ENTER isn't pressed, check C key
+	LD A, 'E'			    ; ENTER pressed, A = 'ENTER'
+	LD (PRESSED_KEY), A		; Save the pressed key
+	JP WAIT_FOR_KEY_RELEASE ; Wait for key release
 ;-----------------------------------------------------------------------------------------
 
 
