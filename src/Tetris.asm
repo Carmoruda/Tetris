@@ -43,6 +43,8 @@ PLAYMESSAGE2: DB "LIKE TO PLAY?", 0
 PLAYMESSAGE3: DB " (Y/N)", 0
 BYEMESSAGE: DB "BYE!", 0
 PLAYAGAINMESSAGE: DB "PLAY AGAIN? (Y/N)", 0
+END_CURSOR: DB "N", 0
+START_CURSOR: DB "Y", 0
 ENDMESSAGE: DB "END!", 0
 GAMEMESSAGE: DB "GAME", 0
 
@@ -84,8 +86,9 @@ LOADSTARTINGSCREEN_START: INCBIN "./GraphicScreens/StartingScreenTetris.scr"
     INCLUDE "./Functions/CheckSquareScreen.asm"
 
 ; -------- TODOs --------
-; TODO: Cursor must echo the key pressed (StartingScreen and EndingScreen).
 ; TODO: Press enter to drop tetromino faster.
-; TODO: No blocking of movement through continuous key pressing.
-; TODO: Press key just produces one tetromino movement.
+; FIXME: Press key just produces one tetromino movement.
 ; TODO: Tetromino rotation isnt natural.
+; TODO: User manual.
+; TODO: Include sounds and score.
+; TODO: When a line is completed, it must be deleted and the rest of the tetrominos must be moved down.
