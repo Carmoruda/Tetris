@@ -53,7 +53,7 @@ HORIZONTAL_BORDER:
 ;-----------------------------------------------------------------------------------------
 GENERATE_FIRST_TETROMINO:
     ;CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
-    LD IX, T_S1
+    LD IX, T_I1
     LD (TETROMINO_POINTER), IX  ; Save pointer to TETROMINO_POINTER
 ;-----------------------------------------------------------------------------------------
 

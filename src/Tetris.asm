@@ -34,6 +34,7 @@ TETRIS_WIDTH EQU 19     ; Space between the U borders.
 TETRIS_MAX_WIDTH EQU 25 ; Last column of the U borders.
 TETRIS_HEIGHT EQU 21    ; Last row of the U borders.
 PIECE_HEIGHT: DB 0      ; Tetromino height.
+TETROMINO_WIDTH EQU T_I1 - T_0 ; Width of a tetromino in bytes
 
 
 

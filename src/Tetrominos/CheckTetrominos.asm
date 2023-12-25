@@ -138,6 +138,7 @@ COLLISION_DETECTED:
     LD (ROWS), A                ; ROWS = A = Previous row
     LD A, (GAME_X_POS)          ; A = GAME_X_POS = Previous column
     LD (COLUMNS), A             ; COLUMNS = A = Previous column
+    LD IX, (TETROMINO_POINTER)  ; IX = Previous tetromino
     CALL PAINT_TETROMINO        ; Paint the tetromino in the previous position
     JP END_CHECK_TETROMINO      ; End of the CHECK_TETROMINO routine
 ;-----------------------------------------------------------------------------------------
