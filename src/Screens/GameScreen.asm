@@ -53,7 +53,7 @@ HORIZONTAL_BORDER:
 ;-----------------------------------------------------------------------------------------
 GENERATE_FIRST_TETROMINO:
     ;CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
-    LD IX, T_I1
+    LD IX, T_J4
     LD (TETROMINO_POINTER), IX  ; Save pointer to TETROMINO_POINTER
 ;-----------------------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ GAME_NEXT_TETROMINO:
     LD A, 7         ; Screen row for the next tetromino
     LD (ROWS), A    ; Save row for the next tetromino
 
-    LD A, 28        ; Screen column for the next tetromino
+    LD A, 27        ; Screen column for the next tetromino
     LD (COLUMNS), A ; Save column for the next tetromino
 
     CALL PAINT_TETROMINO ; Paint next tetromino
@@ -179,7 +179,7 @@ NEXT_TETROMINO:
     LD A, 7         ; Screen row
     LD (ROWS), A    ; Save row
 
-    LD A, 28        ; Screen column
+    LD A, 27        ; Screen column
     LD (COLUMNS), A ; Save column
 
     CALL ERASE_TETROMINO       ; Erase tetromino
