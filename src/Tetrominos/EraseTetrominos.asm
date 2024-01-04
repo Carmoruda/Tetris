@@ -11,6 +11,9 @@
 ERASE_TETROMINO:
     PUSH AF
     PUSH BC
+    LD A, 0
+    LD (PRESSED_KEY), A          ; PRESSED_KEY = 0
+
     LD IY, IX       ; IY = Tetromino we want to erase
     INC IY: INC IY  ; IY = Pointer to the first square of the tetromino
     LD E, (IX)      ; E = Number of rows

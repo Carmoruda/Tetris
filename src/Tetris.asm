@@ -31,11 +31,10 @@ DELAY_MOVE_MIN: DW 100  ; Minimum delay for the tetromino to move left or right 
 ACTIVE_DELAY: DW 0      ; Time delay that is currently active.
 COLLISION: DB 0         ; Collision with other tetrominos.
 TETRIS_WIDTH EQU 19     ; Space between the U borders.
-TETRIS_MAX_WIDTH EQU 25 ; Last column of the U borders.
+TETRIS_MAX_WIDTH EQU 24 ; Last column of the U borders.
 TETRIS_HEIGHT EQU 21    ; Last row of the U borders.
 PIECE_HEIGHT: DB 0      ; Tetromino height.
 TETROMINO_WIDTH EQU T_I1 - T_0 ; Width of a tetromino in bytes
-
 
 
 ; -------- SCREEN TEXTS -------
@@ -48,10 +47,12 @@ END_CURSOR: DB "N", 0
 START_CURSOR: DB "Y", 0
 ENDMESSAGE: DB "END!", 0
 GAMEMESSAGE: DB "GAME", 0
+SCOREMESSAGE: DB "SCORE", 0
 
 
 ; -------- GAMESTATUS -------
 GAME_STATUS_STRUCT:
+GAME_SCORE: DB 0          ; Score.
 GAME_X_POS: DB 0                ; X position of the current tetromino.
 GAME_Y_POS: DB 0                ; Y position of the current tetromino.
 TETROMINO_POINTER: DW 0         ; Pointer to the current tetromino.

@@ -13,7 +13,7 @@ GAMESCREEN:
 ; VERTICAL_BORDER - Display the U vertical sides.
 ;-----------------------------------------------------------------------------------------
 VERTICAL_BORDER:
-    LD C, 6     ; Column
+    LD C, 5     ; Column
     LD A, $38   ; Square color (hex) -> White
     CALL DOTYXC ; Paint square
 
@@ -29,7 +29,7 @@ VERTICAL_BORDER:
     CP TETRIS_HEIGHT
     JR NZ, VERTICAL_BORDER ; If Row < TETRIS_HEIGHT, repeat
 
-    LD C, 6     ; Column
+    LD C, 5     ; Column
 ;-----------------------------------------------------------------------------------------
 
 
@@ -52,8 +52,7 @@ HORIZONTAL_BORDER:
 ;                      OUT - TETROMINO_POINTER = Pointer to current tetromino in play.
 ;-----------------------------------------------------------------------------------------
 GENERATE_FIRST_TETROMINO:
-    ;CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
-    LD IX, T_T4
+    CALL RANDOM_NUMBER          ; Returns a random tetromino in the IX register
     LD (TETROMINO_POINTER), IX  ; Save pointer to TETROMINO_POINTER
 ;-----------------------------------------------------------------------------------------
 
@@ -67,7 +66,7 @@ GAME_TETROMINO:
     LD (ROWS), A        ; Save row
     LD (GAME_Y_POS), A  ; Save row to the GAME_STATUS_STRUCT
 
-    LD A, 15           ; Screen column
+    LD A, 14           ; Screen column
     LD (COLUMNS), A    ; Save column
     LD (GAME_X_POS), A ; Save column to the GAME_STATUS_STRUCT
 
@@ -113,6 +112,8 @@ GAME_NEXT_TETROMINO:
 
     LD A, (GAME_X_POS) ; A = Column where the current tetromino should be painted.
     LD (COLUMNS), A    ; COLUMNS = Current tetromino column position
+
+    CALL PRINT_SCORE    ; Print GAME_SCORE
     POP IX
     POP AF
 ;-----------------------------------------------------------------------------------------
@@ -154,9 +155,9 @@ TETRIS_ACTION:
     JP Z, MOVE_TETROMINO_LEFT    ; Move tetromino to the left
     CP 'C'                       ; If PRESSED_KEY == 'C'
     JP Z, MOVE_TETROMINO_RIGHT   ; Move tetromino to the right
-    CP 'J'                       ; If PRESSED_KEY == 'J'
-    JP Z, ROTATE_TETROMINO_LEFT  ; Rotate tetromino to the left
     CP 'L'                       ; If PRESSED_KEY == 'L'
+    JP Z, ROTATE_TETROMINO_LEFT  ; Rotate tetromino to the left
+    CP 'J'                       ; If PRESSED_KEY == 'J'
     JP Z, ROTATE_TETROMINO_RIGHT ; Rotate tetromino to the right
     ;CP 'E'
     ;JP Z, MOVE_TETROMINO_FAST
@@ -184,6 +185,7 @@ NEXT_TETROMINO:
 
     CALL ERASE_TETROMINO       ; Erase tetromino
     LD (TETROMINO_POINTER), IX ; Save pointer to the tetromino
+
     JP GAME_TETROMINO
 ;-----------------------------------------------------------------------------------------
 
@@ -195,10 +197,41 @@ NEXT_TETROMINO:
 COLLISION_ACTION:
     CALL PAINT_TETROMINO
     CALL NEXT_TETROMINO
-;-----------------------------------------------------------------------------------------
-
 COLLISION_ACTION_END:
     CALL ENDINGSCREEN
+;-----------------------------------------------------------------------------------------
+
+
+;-----------------------------------------------------------------------------------------
+; PRINT_SCORE - Prints the current score.
+;-----------------------------------------------------------------------------------------
+PRINT_SCORE:
+    PUSH IX
+    PUSH AF
+    PUSH BC
+    LD B, 1     ; Row
+    LD C, 26    ; Column
+    LD A, $07   ; Square color (hex) -> White
+
+    ; Score
+    LD IX, SCOREMESSAGE
+    ; CALL PRINTAT
+
+    LD B, 3     ; Row
+    LD C, 27    ; Column
+    LD A, $07   ; Square color (hex) -> White
+
+    LD IX, (GAME_SCORE)
+    ; CALL PRINTAT
+
+    LD A, (GAME_SCORE)
+    INC A
+    LD (GAME_SCORE), A
+
+    POP BC
+    POP AF
+    POP IX
+    RET
 
 ;-----------------------------------------------------------------------------------------
 ; GAMELOOP - Game simulation.
