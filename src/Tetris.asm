@@ -88,7 +88,6 @@ LOADSTARTINGSCREEN_START: INCBIN "./GraphicScreens/StartingScreenTetris.scr"
 
 ; -------- TODOs --------
 ; TODO: Press enter to drop tetromino faster.
-; FIXME: Press key just produces one tetromino movement.
 ; TODO: User manual.
-; TODO: Include sounds and score.
+; TODO: Include score.
 ; TODO: When a line is completed, it must be deleted and the rest of the tetrominos must be moved down.

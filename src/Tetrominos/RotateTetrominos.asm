@@ -2,6 +2,8 @@
 ; ROTATE_INI - Initializes the rotation routine.
 ;------------------------------------------------------------------------------------------
 ROTATE_INI:
+    LD A, 0                    ; A = 0
+    LD (PRESSED_KEY), A        ; Save to PRESSED_KEY
     CALL ERASE_TETROMINO       ; Erase current tetromino
     LD IX, (TETROMINO_POINTER) ; Get tetromino pointer
     RET

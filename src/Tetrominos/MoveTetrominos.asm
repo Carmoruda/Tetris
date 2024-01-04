@@ -1,8 +1,19 @@
+;------------------------------------------------------------------------------------------
+; MOVE_INI - Initializes the move routine.
+;------------------------------------------------------------------------------------------
+MOVE_INI:
+    LD A, 0                ; A = 0
+    LD (PRESSED_KEY), A    ; Save to PRESSED_KEY
+    CALL ERASE_TETROMINO   ; Erase current tetromino
+    RET
+;------------------------------------------------------------------------------------------
+
+
 ;-----------------------------------------------------------------------------------------
 ; MOVE_TETROMINO_LEFT - Moves the tetromino one column to the left.
 ;-----------------------------------------------------------------------------------------
 MOVE_TETROMINO_LEFT:
-    CALL ERASE_TETROMINO    ; Erase current tetromino
+    CALL MOVE_INI
 
     LD A, (COLUMNS)         ; A = X position
     DEC A                   ; A = X position - 1 (Move left)
@@ -23,7 +34,7 @@ MOVE_TETROMINO_LEFT:
 ; MOVE_TETROMINO_RIGHT - Moves the tetromino one column to the right.
 ;-----------------------------------------------------------------------------------------
 MOVE_TETROMINO_RIGHT:
-    CALL ERASE_TETROMINO   ; Erase current tetromino
+    CALL MOVE_INI
 
     LD A, (COLUMNS)        ; A = X position
     INC A                  ; A = X position + 1 (Move right)
@@ -106,8 +117,6 @@ MOVE_TETROMINO_FAST:
 ; END_MOVE - Ends the movement of the tetromino when a key is pressed.
 ;-----------------------------------------------------------------------------------------
 END_MOVE:
-    LD A, ' '                  ; A = ' '
-    LD (PRESSED_KEY), A        ; Save ' ' to PRESSED_KEY
     LD IX, (TETROMINO_POINTER) ; IX = Pointer to the tetromino
     CALL PAINT_TETROMINO       ; Paint tetromino
     CALL DELAY                 ; Time delay
